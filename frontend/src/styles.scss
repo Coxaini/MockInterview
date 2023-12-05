@@ -1,0 +1,33 @@
+@use './app/styles/layout.scss' as *;
+@use './app/styles/input.scss' as *;
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+    .min-h-small-screen {
+        min-height: 100vh; /* fallback for Opera, IE and etc. */
+        min-height: 100svh;
+    }
+}
+
+/* width */
+::-webkit-scrollbar {
+    @apply w-2;
+}
+ 
+/* Track */
+::-webkit-scrollbar-track {
+    @apply bg-transparent;
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+    @apply bg-base-content rounded-md;
+}
+ 
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    @apply bg-base-content;
+}

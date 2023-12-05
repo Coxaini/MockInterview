@@ -1,0 +1,13 @@
+<div
+    class="card p-3 hover:cursor-pointer"
+    [ngClass]="{
+        'bg-accent text-accent-content hover:bg-accent-focus': selected,
+        'bg-base-200 hover:bg-base-300': !selected
+    }"
+    (click)="onClick()"
+    (keydown.enter)="onClick()"
+    tabindex="0"
+>
+    <h2 class="card-title">{{ role }}</h2>
+    <p class="card-text">{{ description }}</p>
+</div>

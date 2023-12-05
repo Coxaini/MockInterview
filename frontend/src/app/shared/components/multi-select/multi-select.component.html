@@ -1,0 +1,47 @@
+<div class="dropdown w-full">
+    <div
+        role="button"
+        class="flex bg-base-200 items-center h-max flex-wrap gap-1.5 p-2 w-full"
+    >
+        @for (option of selectedOptions$ | async; track $index) {
+            <button
+                class="p-1.5 inline-flex cursor-pointer bg-base-300 rounded-btn text-md hover:outline hover:outline-error"
+                (click)="removeOption($index)"
+            >
+                {{ option }}
+                <!-- <span class="ml-1 font-bold">X</span> -->
+            </button>
+        }
+
+        <input
+            (input)="searchChanged($event)"
+            #searchInput
+            class="flex-grow min-w-[80px] focus:outline-none p-1.5 bg-transparent"
+        />
+    </div>
+    <div
+        class="dropdown-content p-1.5 pt-0 bg-base-200 w-full flex flex-col flex-wrap gap-1.5"
+    >
+        <div class="divider divider-primary m-0 h-1"></div>
+        <div
+            class="flex bg-base-200 flex-wrap sm:overflow-y-auto sm:max-h-[175px]"
+        >
+            @for (option of filteredOptions$ | async; track option) {
+                <button
+                    [attr.tabindex]="$first ? 0 : null"
+                    class="p-1.5 m-1 inline-flex cursor-pointer bg-base-300 rounded-btn text-md hover:outline hover:outline-primary"
+                    (click)="addOption(option)"
+                >
+                    {{ option }}
+                    <!-- <span class="ml-1 font-bold">X</span> -->
+                </button>
+            } @empty {
+                <div
+                    class="text-center w-full my-5 font-bold text-base-content"
+                >
+                    No options found
+                </div>
+            }
+        </div>
+    </div>
+</div>

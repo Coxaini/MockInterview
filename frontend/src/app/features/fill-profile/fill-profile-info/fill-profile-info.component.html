@@ -1,0 +1,64 @@
+<h1 class="text-lg m-2.5">Customize your public profile</h1>
+
+<div class="form-control gap-y-5" formGroupName="baseInfo">
+    <div class="flex flex-row items-center gap-5">
+        <img
+            src="https://picsum.photos/seed/picsum/300/300"
+            alt="random image"
+            class="w-24 rounded-full"
+        />
+        <input type="file" class="file-input file-input-bordered" />
+    </div>
+    <div class="form-control">
+        <label for="name" class="label">
+            <span appRequiredFormInput class="label-text">Name</span>
+        </label>
+        <input
+            formControlName="name"
+            id="name"
+            type="text"
+            placeholder="Name"
+            class="input input-bordered w-full"
+        />
+    </div>
+    <div class="form-control">
+        <label for="bio" class="label"> Bio </label>
+        <textarea
+            formControlName="bio"
+            id="bio"
+            placeholder="Bio"
+            class="textarea textarea-bordered resize-none w-full h-24"
+            maxlength="200"
+        ></textarea>
+        <label class="label" for="bio">
+            <span class="label-text-alt"></span
+        ></label>
+    </div>
+    <div class="form-control">
+        <label for="yearsOfExperience" class="label">
+            Years of experience
+        </label>
+        <select
+            formControlName="yearsOfExperience"
+            id="yearsOfExperience"
+            class="select select-info w-full"
+        >
+            <option
+                *ngFor="let value of yearsOfExperience"
+                [value]="value.value"
+            >
+                {{ value.viewValue }}
+            </option>
+        </select>
+    </div>
+    <div class="form-control">
+        <label for="location" class="label"> Location </label>
+        <input
+            formControlName="location"
+            id="location"
+            type="text"
+            placeholder="Location"
+            class="input input-bordered w-full"
+        />
+    </div>
+</div>

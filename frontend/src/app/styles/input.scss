@@ -1,0 +1,7 @@
+input.input.ng-invalid.ng-touched {
+  @apply input-error;
+} 
+
+textarea.textarea.ng-invalid.ng-touched {
+  @apply textarea-error;
+}

@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres-db
+    environment:
+      POSTGRES_DB: MockInterviewDB
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: mysecretpassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - ~/.mock/postgres_data:/var/lib/postgresql/data
+
+  neo4j:
+    image: neo4j:latest
+    container_name: neo4j-db
+    environment:
+      NEO4J_AUTH: neo4j/password
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    volumes:
+      - $HOME/neo4j/data:/data
+      - $HOME/neo4j/conf/:/conf/
+    restart: on-failure
+
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq-queue
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password
+    volumes:
+      - ~/.mock/rabbitmq/data:/var/lib/rabbitmq
+      - ~/.mock/rabbitmq/log:/var/log/rabbitmq
+
+# Add your application service(s) here
+

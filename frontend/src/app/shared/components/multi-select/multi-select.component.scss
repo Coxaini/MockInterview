@@ -1,0 +1,10 @@
+@media screen and (max-width: 767px) {
+    .dropdown .dropdown-content,
+    .dropdown:not(.dropdown-hover):focus .dropdown-content,
+    .dropdown:focus-within .dropdown-content 
+    {
+        visibility: visible;
+        opacity: 1;
+        transform: none;
+    }
+}

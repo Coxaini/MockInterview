@@ -1,0 +1,6 @@
+:host {
+    width: 100%;
+    @screen sm {
+        width: min(500px, 60%);
+    }
+}

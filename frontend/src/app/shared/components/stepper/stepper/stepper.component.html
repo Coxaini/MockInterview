@@ -1,0 +1,54 @@
+<ul class="steps">
+    @for (step of steps; track step.label) {
+        <button
+            (click)="selectStep($index)"
+            [ngClass]="{
+                'step-success': step.stepStatus === StepStatus.Completed,
+                'step-error text-error': step.stepStatus === StepStatus.Invalid,
+                'after:border-4 after:border-base-content':
+                    selectedStep() === $index
+            }"
+            class="step hover:cursor-pointer"
+        >
+            {{ step.label }}
+        </button>
+    }
+</ul>
+@for (step of steps; track step.label) {
+    <ng-container>
+        <ng-container
+            *ngIf="selectedStep() === $index"
+            [ngTemplateOutlet]="step.content"
+        ></ng-container>
+    </ng-container>
+}
+<div class="flex justify-between w-full">
+    <button
+        type="button"
+        class="btn btn-primary btn-outline"
+        [disabled]="selectedStep() === 0"
+        (click)="previousStep()"
+    >
+        Back
+    </button>
+    @if (selectedStep() < steps.length - 1) {
+        <button
+            type="button"
+            class="btn btn-primary btn-outline"
+            (click)="nextStep()"
+        >
+            Next
+        </button>
+    } @else {
+        <div [class.tooltip]="!isValid" data-tip="Please fill all the fields">
+            <button
+                type="submit"
+                [disabled]="!isValid"
+                class="btn btn-accent"
+                (click)="submit()"
+            >
+                Submit
+            </button>
+        </div>
+    }
+</div>

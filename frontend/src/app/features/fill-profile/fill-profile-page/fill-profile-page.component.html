@@ -1,0 +1,21 @@
+<form [formGroup]="profileForm" class="center-panel">
+    <app-border-card>
+        <app-stepper (submitEvent)="submit()" [isValid]="profileForm.valid">
+            <app-step label="Welcome">
+                <app-welcome-intro></app-welcome-intro>
+            </app-step>
+            <app-step
+                [stepStatus]="getStepStatus('baseInfo')"
+                label="General info"
+            >
+                <app-fill-profile-info></app-fill-profile-info>
+            </app-step>
+            <app-step
+                [stepStatus]="getStepStatus('programmingLanguages')"
+                label="Skills"
+            >
+                <app-fill-profile-skills></app-fill-profile-skills>
+            </app-step>
+        </app-stepper>
+    </app-border-card>
+</form>

@@ -1,0 +1,37 @@
+<div class="grid sm:grid-cols-3 grid-cols-1">
+    @for (tile of tiles; track tile.name) {
+        <button
+            class="flex p-2"
+            [ngClass]="{
+                'bg-primary text-primary-content hover:bg-primary-focus':
+                    isSelected(tile.name)(),
+                'bg-base-200 text-base-content hover:bg-base-300': !isSelected(
+                    tile.name
+                )(),
+                'bg-primary-content pointer-events-none text-base-content':
+                    disabled
+            }"
+            (click)="select(tile.name)"
+        >
+            @if (tile.fileName) {
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="25px"
+                    height="25px"
+                    class="mx-2"
+                    [ngClass]="{
+                        'filter grayscale': disabled
+                    }"
+                >
+                    <image
+                        width="25px"
+                        height="25px"
+                        [attr.xlink:href]="tile.fileName"
+                    ></image>
+                </svg>
+            }
+
+            {{ tile.name }}
+        </button>
+    }
+</div>
