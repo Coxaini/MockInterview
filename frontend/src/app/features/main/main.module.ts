@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { MainRoutingModule } from './main-routing.module';
 import { HomePageComponent } from './home-page/home-page.component';
-import { LayoutModule } from '../../core/components/layout/layout.module';
+import { LayoutModule } from '@core/components/layout/layout.module';
 
 @NgModule({
     declarations: [HomePageComponent],

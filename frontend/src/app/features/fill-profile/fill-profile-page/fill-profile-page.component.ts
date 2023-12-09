@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { StepStatus } from 'src/app/shared/components/stepper/models/StepStatus';
-import { UsersService } from '../../../core/services/users/users.service';
+import { UsersService } from '@core/services/users/users.service';
 import { FillProfileRequest } from 'src/app/core/services/users/requests/fill-profile-request';
-import { UserSkillsService } from '../../../core/services/skills/user-skills.service';
-import { SetSkillsRequest } from '../../../core/services/skills/requests/set-skills-request';
+import { UserSkillsService } from '@core/services/skills/user-skills.service';
+import { SetSkillsRequest } from '@core/services/skills/requests/set-skills-request';
 import { combineLatest } from 'rxjs';
 
 @Component({

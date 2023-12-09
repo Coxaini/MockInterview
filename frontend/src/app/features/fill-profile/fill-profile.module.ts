@@ -14,8 +14,8 @@ import { MultiSelectComponent } from 'src/app/shared/components/multi-select/mul
 import { InfoCardsModule } from 'src/app/shared/components/info-cards/info-cards.module';
 import { FillProfileRoutingModule } from './fill-profile-routing.module';
 import { FillProfilePageComponent } from './fill-profile-page/fill-profile-page.component';
-import { BorderCardComponent } from '../../shared/components/border-card/border-card.component';
-import { StepperModule } from '../../shared/components/stepper/stepper.module';
+import { BorderCardComponent } from '@shared/components/border-card/border-card.component';
+import { StepperModule } from '@shared/components/stepper/stepper.module';
 
 @NgModule({
     declarations: [
