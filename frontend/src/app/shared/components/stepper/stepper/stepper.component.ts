@@ -1,9 +1,9 @@
 import {
-    ChangeDetectionStrategy,
     Component,
     ContentChildren,
     EventEmitter,
     Input,
+    Optional,
     Output,
     QueryList,
     signal,
@@ -21,6 +21,8 @@ export class StepperComponent {
     @ContentChildren(StepComponent) steps: QueryList<StepComponent>;
 
     @Input() isValid: boolean;
+
+    @Optional() @Input() isStepBarVisible: boolean = true;
 
     @Output() submitEvent = new EventEmitter<void>();
 

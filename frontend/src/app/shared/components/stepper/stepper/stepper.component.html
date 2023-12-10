@@ -1,19 +1,22 @@
-<ul class="steps">
-    @for (step of steps; track step.label) {
-        <button
-            (click)="selectStep($index)"
-            [ngClass]="{
-                'step-success': step.stepStatus === StepStatus.Completed,
-                'step-error text-error': step.stepStatus === StepStatus.Invalid,
-                'after:border-4 after:border-base-content':
-                    selectedStep() === $index
-            }"
-            class="step hover:cursor-pointer"
-        >
-            {{ step.label }}
-        </button>
-    }
-</ul>
+@if (isStepBarVisible) {
+    <ul class="steps">
+        @for (step of steps; track step.label) {
+            <button
+                (click)="selectStep($index)"
+                [ngClass]="{
+                    'step-success': step.stepStatus === StepStatus.Completed,
+                    'step-error text-error':
+                        step.stepStatus === StepStatus.Invalid,
+                    'after:border-4 after:border-base-content':
+                        selectedStep() === $index
+                }"
+                class="step hover:cursor-pointer"
+            >
+                {{ step.label }}
+            </button>
+        }
+    </ul>
+}
 @for (step of steps; track step.label) {
     <ng-container>
         <ng-container
