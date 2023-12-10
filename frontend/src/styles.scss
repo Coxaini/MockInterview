@@ -1,6 +1,8 @@
 @use './app/styles/layout.scss' as *;
 @use './app/styles/input.scss' as *;
 
+@import '@angular/cdk/overlay-prebuilt.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -16,17 +18,17 @@
 ::-webkit-scrollbar {
     @apply w-2;
 }
- 
+
 /* Track */
 ::-webkit-scrollbar-track {
     @apply bg-transparent;
 }
- 
+
 /* Handle */
 ::-webkit-scrollbar-thumb {
     @apply bg-base-content rounded-md;
 }
- 
+
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
     @apply bg-base-content;
