@@ -39,6 +39,7 @@
             type="button"
             class="btn btn-primary btn-outline"
             (click)="nextStep()"
+            [disabled]="!isNextButtonValid"
         >
             Next
         </button>
@@ -50,7 +51,7 @@
                 class="btn btn-accent"
                 (click)="submit()"
             >
-                Submit
+                {{ confirmButtonText }}
             </button>
         </div>
     }

@@ -1,9 +1,9 @@
 import {
     Component,
     ContentChildren,
+    effect,
     EventEmitter,
     Input,
-    Optional,
     Output,
     QueryList,
     signal,
@@ -22,13 +22,33 @@ export class StepperComponent {
 
     @Input() isValid: boolean;
 
-    @Optional() @Input() isStepBarVisible: boolean = true;
+    @Input() isStepBarVisible: boolean = true;
+
+    @Input() confirmButtonText: string = 'Confirm';
+
+    @Input() isNextButtonActiveWhenInvalid: boolean = true;
 
     @Output() submitEvent = new EventEmitter<void>();
+
+    @Output() labelUpdated = new EventEmitter<string>();
 
     public selectedStep = signal(0);
 
     StepStatus = StepStatus;
+
+    constructor() {
+        effect(() => {
+            this.labelUpdated.emit(this.steps.get(this.selectedStep())?.label);
+        });
+    }
+
+    get isNextButtonValid() {
+        return (
+            this.isNextButtonActiveWhenInvalid ||
+            this.steps.get(this.selectedStep())?.stepStatus ===
+                StepStatus.Completed
+        );
+    }
 
     previousStep() {
         this.selectedStep.update((i) => i - 1);
