@@ -38,7 +38,7 @@ public class RefreshAccessTokenQueryHandler : IRequestHandler<RefreshAccessToken
             return Result.Fail(AuthenticationErrors.InvalidAccessToken);
         }
 
-        var userId = Guid.Parse(principal.Claims.First(x => x.Type == JwtRegisteredClaimNames.NameId).Value);
+        var userId = Guid.Parse(principal.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value);
 
         var user = await _dbContext.Users
             .AsNoTracking()

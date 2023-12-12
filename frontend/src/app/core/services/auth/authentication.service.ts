@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
-import { RegisterRequest } from 'src/app/features/auth/services/register-request';
+import { environment } from '@env/environment';
+import { RegisterRequest } from '@core/services/auth/register-request';
 import { LoginRequest } from './login-request';
 
 @Injectable({
@@ -22,5 +22,13 @@ export class AuthenticationService {
 
     public register(request: RegisterRequest) {
         return this.httpClient.post(`${this.prefix}/register`, request);
+    }
+
+    public refreshToken() {
+        return this.httpClient.post(`${this.prefix}/refresh`, {});
+    }
+
+    public logout() {
+        return this.httpClient.post(`${this.prefix}/logout`, {});
     }
 }
