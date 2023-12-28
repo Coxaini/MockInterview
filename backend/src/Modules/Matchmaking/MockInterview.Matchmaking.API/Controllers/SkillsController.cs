@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MockInterview.Matchmaking.Application.Skills.Queries;
+using MockInterview.Matchmaking.Domain.Models;
+using MockInterview.Matchmaking.Domain.Models.Skills;
 using Shared.Core.API.Controllers;
 
 namespace MockInterview.Matchmaking.API.Controllers;
@@ -15,7 +17,7 @@ public class SkillsController : ApiController
     }
 
     [HttpGet("technologies")]
-    public async Task<IActionResult> GetTechnologies()
+    public async Task<ActionResult<IEnumerable<Technology>>> GetTechnologies()
     {
         var result = await Mediator.Send(new GetTechnologiesQuery());
 

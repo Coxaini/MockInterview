@@ -14,6 +14,8 @@ public static class DependencyInjection
         services.AddNeo4JDb(configuration);
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<ISkillRepository, SkillRepository>();
+        services.AddScoped<IInterviewOrderRepository, InterviewOrderRepository>();
+        services.AddScoped<IInterviewTimeSlotsRepository, InterviewTimeSlotsRepository>();
         return services;
     }
 }

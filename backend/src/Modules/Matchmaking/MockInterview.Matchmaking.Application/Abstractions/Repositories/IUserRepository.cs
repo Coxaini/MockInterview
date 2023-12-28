@@ -1,4 +1,6 @@
 ﻿using MockInterview.Matchmaking.Domain.Models;
+using MockInterview.Matchmaking.Domain.Models.Skills;
+using MockInterview.Matchmaking.Domain.Models.Users;
 
 namespace MockInterview.Matchmaking.Application.Abstractions.Repositories;
 

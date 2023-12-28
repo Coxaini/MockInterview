@@ -1,4 +1,4 @@
-﻿namespace MockInterview.Matchmaking.Domain.Models;
+﻿namespace MockInterview.Matchmaking.Domain.Models.Skills;
 
 public class Technology
 {

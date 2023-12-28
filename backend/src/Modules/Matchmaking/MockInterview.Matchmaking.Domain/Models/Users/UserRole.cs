@@ -1,4 +1,4 @@
-﻿namespace MockInterview.Identity.Domain.Entities.Users;
+﻿namespace MockInterview.Matchmaking.Domain.Models.Users;
 
 [Flags]
 public enum UserRole

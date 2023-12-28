@@ -1,6 +1,8 @@
-﻿using Microsoft.Extensions.Options;
+﻿using System.Collections;
+using Microsoft.Extensions.Options;
 using MockInterview.Matchmaking.Application.Abstractions.Repositories;
 using MockInterview.Matchmaking.Domain.Models;
+using MockInterview.Matchmaking.Domain.Models.Skills;
 using Neo4j.Driver;
 using Shared.Persistence.Neo4j.Common.Repositories;
 using Shared.Persistence.Neo4j.Settings;
@@ -78,6 +80,59 @@ public class SkillRepository : GraphRepository, ISkillRepository
 
             return result;
         });
+    }
+
+    public async Task<IEnumerable<string>> GetUsersProgrammingLanguagesAsync(Guid userId)
+    {
+        await using var session = OpenSession();
+
+        return await session.ExecuteReadAsync(async tx =>
+        {
+            var cursor = await tx.RunAsync(
+                """
+                MATCH (u:USER {id: $Id})-[:KNOWS]->(l:LANGUAGE)
+                RETURN l.name as langName
+                """,
+                new
+                {
+                    Id = userId.ToString()
+                }
+            );
+
+            var result = await cursor.ToListAsync(r => r["langName"].As<string>());
+
+            return result;
+        });
+    }
+
+    public async Task<IEnumerable<Technology>> GetUserTechnologiesWithLanguagesAsync(Guid userId)
+    {
+        await using var session = OpenSession();
+
+        return await session.ExecuteReadAsync(async tx =>
+        {
+            var cursor = await tx.RunAsync(
+                """
+                MATCH (u:USER {id: $Id})-[:KNOWS]->(t:TECHNOLOGY)
+                OPTIONAL MATCH (t)<-[:USES]-(l:LANGUAGE)
+                RETURN t.name as techName, collect(l.name) as langNames
+                ORDER BY size(langNames) DESC, langNames[0]
+                """,
+                new
+                {
+                    Id = userId.ToString()
+                }
+            );
+
+            var result = await cursor.ToListAsync(r => new Technology
+            {
+                Name = r["techName"].As<string>(),
+                ProgrammingLanguages = r["langNames"].As<List<string>>().ToArray()
+            });
+
+            return result;
+        });
+        
     }
 
     public async Task<IEnumerable<Technology>> GetTechnologiesWithLanguagesAsync()

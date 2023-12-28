@@ -1,6 +1,6 @@
 ﻿using Shared.Domain.Enums;
 
-namespace MockInterview.Matchmaking.Domain.Models;
+namespace MockInterview.Matchmaking.Domain.Models.Users;
 
 public class User
 {

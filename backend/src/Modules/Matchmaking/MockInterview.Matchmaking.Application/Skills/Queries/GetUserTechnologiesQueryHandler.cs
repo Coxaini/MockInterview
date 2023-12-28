@@ -6,20 +6,19 @@ using MockInterview.Matchmaking.Domain.Models.Skills;
 
 namespace MockInterview.Matchmaking.Application.Skills.Queries;
 
-public class GetTechnologiesQueryHandler : IRequestHandler<GetTechnologiesQuery, Result<IEnumerable<Technology>>>
+public class GetUserTechnologiesQueryHandler : IRequestHandler<GetUserTechnologiesQuery, Result<IEnumerable<Technology>>>
 {
     private readonly ISkillRepository _skillRepository;
 
-    public GetTechnologiesQueryHandler(ISkillRepository skillRepository)
+    public GetUserTechnologiesQueryHandler(ISkillRepository skillRepository)
     {
         _skillRepository = skillRepository;
     }
 
-    public async Task<Result<IEnumerable<Technology>>> Handle(GetTechnologiesQuery request,
-        CancellationToken cancellationToken)
+    public async Task<Result<IEnumerable<Technology>>> Handle(GetUserTechnologiesQuery request, CancellationToken cancellationToken)
     {
-        var technologies = await _skillRepository.GetTechnologiesWithLanguagesAsync();
-
+        var technologies = await _skillRepository.GetUserTechnologiesWithLanguagesAsync(request.UserId);
+        
         return Result.Ok(technologies);
     }
 }
