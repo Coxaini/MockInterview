@@ -1,0 +1,14 @@
+:host {
+    @apply flex flex-col w-full overflow-x-hidden;
+}
+
+.calendar-cell-ribbon {
+    border-color: #8e5cd9 transparent transparent;
+    border-style: solid;
+    border-width: 20px 20px 0 0;
+    content: "";
+    left: -1px;
+    position: absolute;
+    top: -1px;
+    border-top-left-radius: 5px;
+}

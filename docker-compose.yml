@@ -17,13 +17,16 @@ services:
     image: neo4j:latest
     container_name: neo4j-db
     environment:
-      NEO4J_AUTH: neo4j/password
+      - NEO4J_AUTH=neo4j/password
+      - NEO4J_PLUGINS=["graph-data-science", "apoc"]
+      - NEO4J_dbms_security_procedures_whitelist=gds.*, apoc.*
+      - NEO4J_dbms_security_procedures_unrestricted=gds.*, apoc.*
     ports:
       - "7474:7474"
       - "7687:7687"
     volumes:
-      - $HOME/neo4j/data:/data
-      - $HOME/neo4j/conf/:/conf/
+      - ~/.mock/neo4j/data:/data
+      - ~/.mock/neo4j/conf/:/conf/
     restart: on-failure
 
   rabbitmq:

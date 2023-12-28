@@ -11,7 +11,7 @@
     [options]="technologiesNames"
 ></app-multi-select>
 @if ((selectedLanguages$ | async)?.length === 0) {
-    <app-info-card
-        info="Select languages first to unlock technologies related to them."
-    ></app-info-card>
+    <app-info-card>
+        Select languages first to unlock technologies related to them.
+    </app-info-card>
 }

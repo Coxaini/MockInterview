@@ -8,7 +8,7 @@ import { DialogRef } from '@angular/cdk/dialog';
     styleUrl: './modal-layout.component.scss',
 })
 export class ModalLayoutComponent {
-    @Input() title: string;
+    @Input() modalTitle: string;
 
     constructor(private dialogRef: DialogRef) {}
 

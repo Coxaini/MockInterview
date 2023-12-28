@@ -1,3 +1,30 @@
-<app-modal-layout title="Plan interview">
-    <p>plan-interview-modal works!</p>
-</app-modal-layout>
+<form [formGroup]="interviewForm" class="h-full">
+    <app-modal-layout [modalTitle]="modalTitle">
+        <app-stepper
+            [isStepBarVisible]="false"
+            [isNextButtonActiveWhenInvalid]="false"
+            (labelUpdated)="modalTitle = $event"
+            [isValid]="interviewForm.valid"
+            (submitEvent)="submit()"
+        >
+            <app-step
+                label="Schedule your interview"
+                [stepStatus]="getStepStatus('programmingLanguage')"
+            >
+                <app-theme-selection></app-theme-selection>
+            </app-step>
+            <app-step
+                label="Select your role"
+                [stepStatus]="getStepStatus('role')"
+            >
+                <app-roles-select formControlName="role"></app-roles-select>
+            </app-step>
+            <app-step
+                label="Time availability"
+                [stepStatus]="getStepStatus('startTime')"
+            >
+                <app-availability-selection></app-availability-selection>
+            </app-step>
+        </app-stepper>
+    </app-modal-layout>
+</form>

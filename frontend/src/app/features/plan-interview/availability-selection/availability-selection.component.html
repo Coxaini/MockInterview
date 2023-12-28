@@ -1,0 +1,36 @@
+<h2 class="text-xl my-2.5">When are you able to interview ?</h2>
+<span class="text-sm">
+    Times are displayed in your local time zone ({{ timeZone }}). Current time
+    is {{ currentTime$ | async | date: "shortTime" }}.
+</span>
+<div class="divider"></div>
+@if (dateSlots$ | async; as dateSlots) {
+    <app-calendar
+        formControlName="startTime"
+        [dateSlots]="dateSlots"
+        (timeSlotSelected)="timeSlotSelected($event)"
+    ></app-calendar>
+}
+<div class="divider"></div>
+@if (selectedInterviewTimeSlot$ | async; as selectedInterviewTimeSlot) {
+    <app-info-card>
+        @switch (selectedInterviewTimeSlot.recommendationLevel) {
+            @case (RecommendationLevel.Low) {
+                <span class="font-bold">Heads up!</span> This time slot has a
+                low number of registered participants so far. You might be the
+                first one! Be a trendsetter and grab this spot if the time works
+                for you.
+            }
+            @case (RecommendationLevel.Medium) {
+                <span class="font-bold">Steady interest!</span> This time slot
+                is filling up at a moderate pace. Secure your spot now to ensure
+                you get a chance to interview.
+            }
+            @case (RecommendationLevel.High) {
+                <span class="font-bold">This slot is thriving!</span>
+                Registration is booming, creating an exciting hub of potential
+                interview partners. Don't miss out on the dynamic possibilities!
+            }
+        }
+    </app-info-card>
+}

@@ -5,6 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { BaseUrlInterceptor } from '@core/interceptors/base-url.interceptor';
+import { AuthInterceptor } from '@core/interceptors/auth.interceptor';
 
 @NgModule({
     declarations: [AppComponent],
@@ -13,6 +14,11 @@ import { BaseUrlInterceptor } from '@core/interceptors/base-url.interceptor';
         {
             provide: HTTP_INTERCEPTORS,
             useClass: BaseUrlInterceptor,
+            multi: true,
+        },
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: AuthInterceptor,
             multi: true,
         },
     ],

@@ -1,4 +1,4 @@
-export interface SetSkillsRequest {
+export interface UserSkills {
     programmingLanguages: string[];
     technologies: string[];
 }

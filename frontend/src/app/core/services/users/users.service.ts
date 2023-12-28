@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { FillProfileRequest } from './requests/fill-profile-request';
-import { User } from '../../models/profile/user';
+import { User } from '@core/models/users/user';
 
 @Injectable({
     providedIn: 'root',

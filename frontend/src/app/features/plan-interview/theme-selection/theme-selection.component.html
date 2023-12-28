@@ -1,0 +1,26 @@
+<h1 class="text-xl my-2.5">Choose one of yours programming languages :</h1>
+@if (userLanguages$ | async; as userLanguages) {
+    <app-tile-select
+        formControlName="programmingLanguage"
+        [tiles]="userLanguages"
+    ></app-tile-select>
+} @else {
+    <div class="flex w-full items-center justify-center">
+        <span class="loading loading-spinner loading-xs"></span>
+    </div>
+}
+<div class="divider"></div>
+<div class="badge badge-secondary badge-outline">additional</div>
+<h1 class="text-xl mt-0 mb-2.5">
+    Choose technologies you would like to talk about :
+</h1>
+@if (filteredTechnologyNames$ | async; as filteredTechnologyNames) {
+    <app-multi-select
+        formControlName="technologies"
+        [options]="filteredTechnologyNames"
+    ></app-multi-select>
+} @else {
+    <div class="flex w-full items-center justify-center">
+        <span class="loading loading-spinner loading-xs"></span>
+    </div>
+}

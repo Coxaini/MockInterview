@@ -1,5 +1,3 @@
-import { UserRole } from './user-role';
-
 export interface User {
     id: string;
     email: string;
@@ -8,6 +6,4 @@ export interface User {
     avatarUrl: string;
     yearsOfExperience: number;
     location: string;
-    skills: string[];
-    role: UserRole;
 }

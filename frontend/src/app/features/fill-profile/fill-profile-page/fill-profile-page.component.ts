@@ -4,8 +4,9 @@ import { StepStatus } from 'src/app/shared/components/stepper/models/StepStatus'
 import { UsersService } from '@core/services/users/users.service';
 import { FillProfileRequest } from 'src/app/core/services/users/requests/fill-profile-request';
 import { UserSkillsService } from '@core/services/skills/user-skills.service';
-import { SetSkillsRequest } from '@core/services/skills/requests/set-skills-request';
+import { UserSkills } from '@core/models/skills/user-skills';
 import { combineLatest } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-fill-profile-page',
@@ -17,6 +18,7 @@ export class FillProfilePageComponent {
         private fb: FormBuilder,
         private profileService: UsersService,
         private userSkillsService: UserSkillsService,
+        private router: Router,
     ) {}
 
     public profileForm = this.fb.group({
@@ -31,10 +33,6 @@ export class FillProfilePageComponent {
             Validators.minLength(1),
         ]),
         technologies: this.fb.control([] as string[]),
-        // role: this.fb.control(undefined as UserRole | undefined, [
-        //     Validators.required,
-        //     Validators.min(1),
-        // ]),
     });
 
     submit() {
@@ -53,10 +51,10 @@ export class FillProfilePageComponent {
             this.userSkillsService.setUserSkills({
                 programmingLanguages,
                 technologies,
-            } as SetSkillsRequest),
+            } as UserSkills),
         ]).subscribe({
             next: () => {
-                console.log('Profile filled successfully');
+                this.router.navigate(['/home']);
             },
             error: (err) => {
                 console.error(err);
