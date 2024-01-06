@@ -23,18 +23,16 @@ public class
 
         var utcNow = DateTime.UtcNow;
 
-        var userLocalDateTime = utcNow.Add(request.TimeZoneOffset);
-
         var startDateTime = new DateTime(utcNow.Year, utcNow.Month, utcNow.Day, 8, 0, 0, DateTimeKind.Utc);
 
-        var userStartDateTime = startDateTime.Add(request.TimeZoneOffset);
-        var userEndDateTime = userStartDateTime.AddHours(12);
+        var userUtcStartDateTime = startDateTime.Add(request.TimeZoneOffset);
+        var userUtcEndDateTime = userUtcStartDateTime.AddHours(12);
 
         var occupiedTimeSlots = await _interviewTimeSlotsRepository
-            .GetInterviewTimeSlotsAsync(userStartDateTime.Date,
-                userStartDateTime.Date.AddDays(7),
-                userStartDateTime.Hour,
-                userEndDateTime.Hour,
+            .GetInterviewTimeSlotsAsync(userUtcStartDateTime.Date,
+                userUtcStartDateTime.Date.AddDays(7),
+                userUtcStartDateTime.Hour,
+                userUtcEndDateTime.Hour,
                 request.ProgrammingLanguage);
 
         Dictionary<DateTime, int> occupiedTimeSlotsDictionary = new(occupiedTimeSlots.Count);
@@ -43,12 +41,12 @@ public class
 
         for (var i = 0; i < 7; i++)
         {
-            var timeSlotDateTime = userStartDateTime.AddDays(i);
-            var endTimeSlotDateTime = userEndDateTime.AddDays(i);
+            var timeSlotDateTime = userUtcStartDateTime.AddDays(i);
+            var endTimeSlotDateTime = userUtcEndDateTime.AddDays(i);
             while (timeSlotDateTime <= endTimeSlotDateTime)
             {
-                if (userLocalDateTime.Date == timeSlotDateTime.Date &&
-                    userLocalDateTime.TimeOfDay >= timeSlotDateTime.TimeOfDay)
+                if (utcNow.Date == timeSlotDateTime.Date &&
+                    utcNow.TimeOfDay >= timeSlotDateTime.TimeOfDay)
                 {
                     timeSlotDateTime = timeSlotDateTime.AddHours(1);
                     continue;

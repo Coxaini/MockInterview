@@ -22,6 +22,17 @@ public static class MessagingExtensions
             configurator.SetKebabCaseEndpointNameFormatter();
 
             configurator.AddConsumers(consumerAssemblies);
+            /*configurator.AddSagaStateMachines(consumerAssemblies);
+            configurator.AddSagas(consumerAssemblies);*/
+
+            // Find and execute IMassTransitConfiguration implementations
+            var configTypes = FindConfigurationTypes(consumerAssemblies);
+            foreach (var configType in configTypes)
+            {
+                object? configInstance = Activator.CreateInstance(configType);
+                if (configInstance is IMassTransitConfiguration massTransitConfiguration)
+                    massTransitConfiguration.ConfigureMassTransit(configurator);
+            }
 
             configurator.UsingRabbitMq((context, cfg) =>
             {
@@ -38,5 +49,12 @@ public static class MessagingExtensions
         services.AddTransient<IEventBus, EventBus>();
 
         return services;
+    }
+
+    private static IEnumerable<Type> FindConfigurationTypes(Assembly[] assemblies)
+    {
+        return assemblies.SelectMany(assembly => assembly.GetExportedTypes())
+            .Where(type => typeof(IMassTransitConfiguration).IsAssignableFrom(type) && !type.IsInterface &&
+                           !type.IsAbstract);
     }
 }

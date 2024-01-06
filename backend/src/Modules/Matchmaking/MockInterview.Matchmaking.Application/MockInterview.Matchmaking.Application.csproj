@@ -7,16 +7,22 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <Folder Include="Interviews\EventConsumers\"/>
         <Folder Include="Users\"/>
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="MediatR" Version="12.1.1"/>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0"/>
+        <PackageReference Include="Quartz" Version="3.8.0"/>
+        <PackageReference Include="Quartz.Extensions.DependencyInjection" Version="3.8.0"/>
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\..\Libraries\MatchingGraph\MatchingGraph.csproj"/>
         <ProjectReference Include="..\..\..\Shared\Shared.Core\Shared.Core.csproj"/>
         <ProjectReference Include="..\..\Identity\MockInterview.Identity.Contracts\MockInterview.Identity.Contracts.csproj"/>
+        <ProjectReference Include="..\MockInterview.Matchmaking.Contracts\MockInterview.Matchmaking.Contracts.csproj"/>
         <ProjectReference Include="..\MockInterview.Matchmaking.Domain\MockInterview.Matchmaking.Domain.csproj"/>
     </ItemGroup>
 
