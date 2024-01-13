@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { UserSkillsService } from '@core/services/skills/user-skills.service';
-import { Tile } from '@shared/components/tile-select/tile';
+import { TextWithIcon } from '@core/common/text-with-icon';
 import { ProgrammingLanguagesService } from '@core/services/skills/programming-languages.service';
 import { ControlContainer } from '@angular/forms';
 import { Technology } from '@core/models/skills/technology';
@@ -18,12 +18,12 @@ import { combineLatest, map, Observable, share, startWith } from 'rxjs';
     ],
 })
 export class ThemeSelectionComponent implements OnInit {
-    userLanguages$: Observable<Tile[]>;
+    userLanguages$: Observable<TextWithIcon[]>;
     private userTechnologies$: Observable<Technology[]>;
 
     filteredTechnologyNames$: Observable<string[]>;
 
-    languages: Tile[] =
+    languages: TextWithIcon[] =
         this.languagesService.getProgrammingLanguagesWithIcons();
 
     constructor(

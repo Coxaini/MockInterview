@@ -6,6 +6,7 @@ import { InterviewPlanService } from '@features/plan-interview/services/intervie
 import { InterviewPlan } from '@features/plan-interview/models/interview-plan';
 import { Router } from '@angular/router';
 import { filter } from 'rxjs';
+import { InterviewService } from '@core/services/interviews/interview.service';
 
 @Component({
     selector: 'app-plan-interview-modal',
@@ -20,6 +21,7 @@ export class PlanInterviewModalComponent implements OnInit {
         private fb: FormBuilder,
         private interviewPlanService: InterviewPlanService,
         private router: Router,
+        private interviewService: InterviewService,
     ) {}
 
     ngOnInit(): void {
@@ -57,8 +59,9 @@ export class PlanInterviewModalComponent implements OnInit {
         }
         const request = this.interviewForm.value as InterviewPlan;
 
-        this.interviewPlanService
-            .planInterview(request)
-            .subscribe(() => this.router.navigate(['/home']));
+        this.interviewPlanService.planInterview(request).subscribe((order) => {
+            this.interviewService.addInterviewOrder(order);
+            this.router.navigate(['/home']);
+        });
     }
 }

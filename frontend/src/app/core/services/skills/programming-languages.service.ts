@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Tile } from '@shared/components/tile-select/tile';
+import { TextWithIcon } from '@core/common/text-with-icon';
 
 @Injectable({
     providedIn: 'root',
@@ -7,7 +7,7 @@ import { Tile } from '@shared/components/tile-select/tile';
 export class ProgrammingLanguagesService {
     constructor() {}
 
-    private languages: Tile[] = [
+    private languages: TextWithIcon[] = [
         { name: 'C#', fileName: 'csharp' },
         { name: 'C++', fileName: 'cplusplus' },
         { name: 'C', fileName: 'c' },
@@ -20,12 +20,18 @@ export class ProgrammingLanguagesService {
         { name: 'Swift', fileName: 'swift' },
         { name: 'TypeScript', fileName: 'typescript' },
         { name: 'Rust', fileName: 'rust' },
-    ];
+    ].map((skill) => ({
+        name: skill.name,
+        fileName: 'assets/langs/' + skill.fileName + '.svg',
+    }));
 
-    public getProgrammingLanguagesWithIcons(): Tile[] {
-        return this.languages.map((skill) => ({
-            name: skill.name,
-            fileName: 'assets/langs/' + skill.fileName + '.svg',
-        }));
+    public getProgrammingLanguagesWithIcons(): TextWithIcon[] {
+        return this.languages;
+    }
+
+    public getProgrammingLanguageWithIcons(
+        name: string,
+    ): TextWithIcon | undefined {
+        return this.languages.find((skill) => skill.name === name);
     }
 }

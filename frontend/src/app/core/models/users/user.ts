@@ -3,7 +3,7 @@ export interface User {
     email: string;
     name: string;
     bio: string;
-    avatarUrl: string;
+    avatarUrl?: string;
     yearsOfExperience: number;
     location: string;
 }

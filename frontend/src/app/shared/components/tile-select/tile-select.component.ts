@@ -8,7 +8,7 @@ import {
     signal,
     WritableSignal,
 } from '@angular/core';
-import { Tile } from './tile';
+import { TextWithIcon } from '@core/common/text-with-icon';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
@@ -27,7 +27,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
     ],
 })
 export class TileSelectComponent implements ControlValueAccessor {
-    @Input() public tiles: Tile[] = [];
+    @Input() public tiles: TextWithIcon[] = [];
     @Input() isMultiSelect = false;
 
     private selectedTiles: WritableSignal<string[]> = signal([]);

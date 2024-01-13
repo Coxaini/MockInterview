@@ -3,6 +3,7 @@ import { InterviewTimeSlot } from '@features/plan-interview/models/interview-tim
 import { InterviewPlan } from '../models/interview-plan';
 import { Subject } from 'rxjs';
 import { Injectable } from '@angular/core';
+import { InterviewOrder } from '@core/models/interviews/interview-order';
 
 @Injectable()
 export class InterviewPlanService {
@@ -31,7 +32,7 @@ export class InterviewPlanService {
     }
 
     planInterview(interviewPlan: InterviewPlan) {
-        return this.httpClient.post(
+        return this.httpClient.post<InterviewOrder>(
             `${this.prefix}/plan-interview`,
             interviewPlan,
         );

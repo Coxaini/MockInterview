@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { ControlContainer } from '@angular/forms';
 import { Technology } from 'src/app/core/models/skills/technology';
 import { SkillsService } from 'src/app/core/services/skills/skills.service';
-import { Tile } from 'src/app/shared/components/tile-select/tile';
+import { TextWithIcon } from '@core/common/text-with-icon';
 import { combineLatest, map, Observable, startWith } from 'rxjs';
 import { ProgrammingLanguagesService } from '@core/services/skills/programming-languages.service';
 
@@ -24,7 +24,7 @@ export class FillProfileSkillsComponent implements OnInit {
         private programmingLanguagesService: ProgrammingLanguagesService,
     ) {}
 
-    private languages: Tile[] =
+    private languages: TextWithIcon[] =
         this.programmingLanguagesService.getProgrammingLanguagesWithIcons();
 
     ngOnInit(): void {
@@ -60,7 +60,7 @@ export class FillProfileSkillsComponent implements OnInit {
 
     public technologiesNames$: Observable<string[]>;
 
-    public get tiles(): Tile[] {
+    public get tiles(): TextWithIcon[] {
         return this.languages;
     }
 }
