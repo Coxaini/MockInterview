@@ -74,6 +74,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MockInterview.Interviews.Do
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared.MongoDB", "src\Shared\Shared.MongoDB\Shared.MongoDB.csproj", "{D62505AF-6E85-4527-A3DE-D787435DF606}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MockInterview.Interviews.DataAccess", "src\Modules\Interview\MockInterview.Interviews.DataAccess\MockInterview.Interviews.DataAccess.csproj", "{67DCA6A9-F87E-489C-A05D-7994A3B6FBCF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -192,6 +194,10 @@ Global
 		{D62505AF-6E85-4527-A3DE-D787435DF606}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D62505AF-6E85-4527-A3DE-D787435DF606}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D62505AF-6E85-4527-A3DE-D787435DF606}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67DCA6A9-F87E-489C-A05D-7994A3B6FBCF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67DCA6A9-F87E-489C-A05D-7994A3B6FBCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67DCA6A9-F87E-489C-A05D-7994A3B6FBCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67DCA6A9-F87E-489C-A05D-7994A3B6FBCF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{B486FBD2-853C-4AEF-8A2C-0835817B27DA} = {BBDA3BED-2ECE-41C1-ADF3-6934586EE77F}
@@ -229,5 +235,6 @@ Global
 		{6651CAC9-5DF4-4798-A472-A1A217AA5291} = {53261DB5-909B-4519-895B-F79F3063B54D}
 		{9DFEEF33-6CC6-4FA8-A306-E002696D1757} = {53261DB5-909B-4519-895B-F79F3063B54D}
 		{D62505AF-6E85-4527-A3DE-D787435DF606} = {D96F9716-972D-48AE-BD52-EB87ED433401}
+		{67DCA6A9-F87E-489C-A05D-7994A3B6FBCF} = {53261DB5-909B-4519-895B-F79F3063B54D}
 	EndGlobalSection
 EndGlobal

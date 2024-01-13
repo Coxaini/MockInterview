@@ -3,5 +3,5 @@
 public record InterviewOrderDto(
     Guid Id,
     string ProgrammingLanguage,
-    IEnumerable<string> Technologies,
+    IEnumerable<string> Tags,
     DateTime StartDateTime);

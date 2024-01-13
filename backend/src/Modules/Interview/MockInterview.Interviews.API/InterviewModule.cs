@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MockInterview.Interviews.Application;
-using MockInterview.Interviews.Infrastructure;
+using MockInterview.Interviews.DataAccess;
 using Shared.Core.Mappings;
 using DependencyInjection = MockInterview.Interviews.Application.DependencyInjection;
 
@@ -16,7 +16,7 @@ public static class InterviewModule
 
         services
             .AddApplication()
-            .AddInfrastructure(configuration);
+            .AddDataBase(configuration);
 
         return services;
     }

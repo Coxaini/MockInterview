@@ -2,4 +2,9 @@
 
 namespace MockInterview.Identity.Contracts.Events;
 
-public record UserUpdatedEvent(Guid Id, string Username, YearsCategory YearsOfExperience);
+public record UserUpdatedEvent(
+    Guid Id,
+    string Username,
+    string Name,
+    YearsCategory YearsOfExperience,
+    string? AvatarUrl);

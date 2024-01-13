@@ -17,10 +17,18 @@ public class InterviewScheduleController : ApiController
     }
 
     [HttpPost("plan-interview")]
-    public async Task<ActionResult> SignUpForInterview(SignUpForInterviewRequest request)
+    public async Task<ActionResult<InterviewOrderDto>> SignUpForInterview(SignUpForInterviewRequest request)
     {
         var result = await Mediator.Send(new OrderInterviewSlotCommand(UserId, request.ProgrammingLanguage,
             request.Technologies, request.StartTime));
+
+        return MatchResult(result, Ok);
+    }
+
+    [HttpGet("requested-interviews")]
+    public async Task<ActionResult<IEnumerable<InterviewOrderDto>>> GetRequestedInterviews()
+    {
+        var result = await Mediator.Send(new GetInterviewOrdersQuery(UserId));
 
         return MatchResult(result, Ok);
     }

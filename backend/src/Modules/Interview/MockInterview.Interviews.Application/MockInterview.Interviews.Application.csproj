@@ -14,12 +14,10 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\..\Shared\Shared.Core\Shared.Core.csproj"/>
+        <ProjectReference Include="..\..\Identity\MockInterview.Identity.Contracts\MockInterview.Identity.Contracts.csproj"/>
         <ProjectReference Include="..\MockInterview.Interviews.Contracts\MockInterview.Interviews.Contracts.csproj"/>
+        <ProjectReference Include="..\MockInterview.Interviews.DataAccess\MockInterview.Interviews.DataAccess.csproj"/>
         <ProjectReference Include="..\MockInterview.Interviews.Domain\MockInterview.Interviews.Domain.csproj"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <Folder Include="Models\"/>
     </ItemGroup>
 
 </Project>

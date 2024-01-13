@@ -20,11 +20,11 @@ public class AuthenticateGitHubUserCommandHandler
     : IRequestHandler<AuthenticateGitHubUserCommand, Result<AuthenticationResult>>
 {
     private readonly IdentityDbContext _dbContext;
+    private readonly IEventBus _eventBus;
     private readonly IGitHubAuthClient _gitHubAuthClient;
     private readonly IJwtTokenGenerator _jwtTokenGenerator;
-    private readonly IRefreshTokenGenerator _refreshTokenGenerator;
     private readonly IMapper _mapper;
-    private readonly IEventBus _eventBus;
+    private readonly IRefreshTokenGenerator _refreshTokenGenerator;
 
     public AuthenticateGitHubUserCommandHandler(IGitHubAuthClient gitHubAuthClient, IdentityDbContext dbContext,
         IJwtTokenGenerator jwtTokenGenerator, IRefreshTokenGenerator refreshTokenGenerator, IMapper mapper,
@@ -74,7 +74,7 @@ public class AuthenticateGitHubUserCommandHandler
 
             return new AuthenticationResult(_mapper.Map<UserDto>(existingUser), userAccessToken,
                 existingUser.RefreshToken,
-                existingUser.RefreshTokenExpiryTime, false);
+                existingUser.RefreshTokenExpiryTime);
         }
 
         var createdUser = CreateNewUser(gitHubUser, gitHubTokenResult.AccessToken);
@@ -82,8 +82,8 @@ public class AuthenticateGitHubUserCommandHandler
         await _dbContext.SaveChangesAsync(cancellationToken);
 
         await _eventBus.PublishAsync(
-            new UserCreatedEvent(createdUser.Id, createdUser.Email, createdUser.Username),
-            cancellationToken);
+            new UserCreatedEvent(createdUser.Id, createdUser.Email, createdUser.Username, createdUser.Name,
+                createdUser.AvatarUrl));
 
         userAccessToken = _jwtTokenGenerator.GenerateToken(new UserClaims(createdUser.Id, createdUser.Email));
 

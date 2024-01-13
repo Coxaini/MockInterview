@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="EfCoreDialogsState">
+    <option name="keyValueStorage">
+      <map>
+        <entry key="Common:32d6dcfa-0b44-48d8-97b1-4b3aba6c4b81:dbContext" value="MockInterview.Identity.DataAccess.IdentityDbContext" />
+        <entry key="Common:67dca6a9-f87e-489c-a05d-7994a3b6fbcf:dbContext" value="MockInterview.Interviews.DataAccess.InterviewsDbContext" />
+        <entry key="Common:buildConfiguration" value="Debug" />
+        <entry key="Common:c5d0595d-e620-4176-94c4-ad835393c5de:dbContext" value="MockInterview.Identity.DataAccess.IdentityDbContext" />
+        <entry key="Common:enableDiagnosticLogging" value="false" />
+        <entry key="Common:noBuild" value="false" />
+        <entry key="Common:outputFolder" value="Migrations" />
+        <entry key="Common:useDefaultConnection" value="true" />
+      </map>
+    </option>
+  </component>
+</project>

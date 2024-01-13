@@ -13,8 +13,8 @@ namespace MockInterview.Identity.Application.Users.Commands;
 public class FillProfileCommandHandler : IRequestHandler<FillProfileCommand, Result<UserDto>>
 {
     private readonly IdentityDbContext _dbContext;
-    private readonly IMapper _mapper;
     private readonly IEventBus _eventBus;
+    private readonly IMapper _mapper;
 
     public FillProfileCommandHandler(IdentityDbContext dbContext, IMapper mapper, IEventBus eventBus)
     {
@@ -26,16 +26,15 @@ public class FillProfileCommandHandler : IRequestHandler<FillProfileCommand, Res
     public async Task<Result<UserDto>> Handle(FillProfileCommand request, CancellationToken cancellationToken)
     {
         var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == request.UserId, cancellationToken);
-        if (user is null)
-        {
-            return Result.Fail(UserErrors.UserNotFound);
-        }
+        if (user is null) return Result.Fail(UserErrors.UserNotFound);
 
         user.UpdateUserInfo(request.Name, request.Location, request.YearsOfExperience, request.Bio);
 
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        await _eventBus.PublishAsync(new UserUpdatedEvent(user.Id, user.Name, user.YearsOfExperience));
+        await _eventBus.PublishAsync(
+            new UserUpdatedEvent(user.Id, user.Username, user.Name, user.YearsOfExperience, user.AvatarUrl),
+            CancellationToken.None);
 
         return _mapper.Map<UserDto>(user);
     }

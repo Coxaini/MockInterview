@@ -1,22 +1,30 @@
-﻿using Shared.MongoDB.Models;
+﻿using MockInterview.Interviews.Domain.Enumerations;
 
 namespace MockInterview.Interviews.Domain.Entities;
 
-public class InterviewQuestion : BsonEntity
+public class InterviewQuestion : Question
 {
     private InterviewQuestion()
     {
     }
 
-    public Question Question { get; private set; } = null!;
+    public Guid InterviewId { get; private set; }
+    public int OrderIndex { get; private set; }
     public int? Rating { get; private set; }
     public string? Feedback { get; private set; }
 
-    public static InterviewQuestion Create(Question question)
+    public static InterviewQuestion Create(string text, Guid authorId, DifficultyLevel difficultyLevel,
+        string programmingLanguage, string tag, Guid interviewId, int orderIndex)
     {
         return new InterviewQuestion
         {
-            Question = question
+            Text = text,
+            AuthorId = authorId,
+            DifficultyLevel = difficultyLevel,
+            ProgrammingLanguage = programmingLanguage,
+            Tag = tag,
+            InterviewId = interviewId,
+            OrderIndex = orderIndex
         };
     }
 

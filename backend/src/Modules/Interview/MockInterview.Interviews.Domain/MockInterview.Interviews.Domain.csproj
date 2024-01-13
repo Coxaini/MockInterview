@@ -7,10 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="MongoDB.Driver.Core" Version="2.23.1"/>
-    </ItemGroup>
-
-    <ItemGroup>
+        <ProjectReference Include="..\..\..\Shared\Shared.Domain\Shared.Domain.csproj"/>
         <ProjectReference Include="..\..\..\Shared\Shared.MongoDB\Shared.MongoDB.csproj"/>
     </ItemGroup>
 

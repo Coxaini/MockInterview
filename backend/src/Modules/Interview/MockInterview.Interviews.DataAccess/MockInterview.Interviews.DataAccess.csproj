@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Ardalis.GuardClauses" Version="4.2.0"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.12"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\..\Shared\Shared.Persistence.EfCore\Shared.Persistence.EfCore.csproj"/>
+        <ProjectReference Include="..\MockInterview.Interviews.Domain\MockInterview.Interviews.Domain.csproj"/>
+    </ItemGroup>
+
+</Project>

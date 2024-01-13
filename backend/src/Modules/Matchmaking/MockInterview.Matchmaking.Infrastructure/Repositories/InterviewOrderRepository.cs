@@ -80,6 +80,34 @@ public class InterviewOrderRepository : GraphRepository, IInterviewOrderReposito
         });
     }
 
+    public async Task<IList<InterviewOrder>> GetInterviewOrdersByUserIdAsync(Guid userId)
+    {
+        await using var session = OpenSession();
+
+        return await session.ExecuteReadAsync(async tx =>
+        {
+            var cursor = await tx.RunAsync(
+                """
+                MATCH (i:INTERVIEW_ORDER)-[:SCHEDULED_AT]->(ts:TIME_SLOT)
+                MATCH (i)-[:REQUIRES]->(l:LANGUAGE)
+                MATCH (i)-[:REQUESTED_BY]->(u:USER {id: $UserId})
+                OPTIONAL MATCH (i)-[:REQUIRES]->(t:TECHNOLOGY)
+                RETURN i.id AS id, ts.startsAt AS startDateTime, u.id AS candidateId,
+                 l.name AS programmingLanguage, collect(t.name) AS technologies
+                ORDER BY ts.startsAt
+                """,
+                new
+                {
+                    UserId = userId.ToString()
+                }
+            );
+
+            var result = await cursor.ToListAsync(MapInterviewOrderFromRecord);
+
+            return result;
+        });
+    }
+
     public async Task<IList<InterviewOrder>> GetInterviewOrdersByStartDateTimeAsync(DateTime startsAt)
     {
         await using var session = OpenSession();
