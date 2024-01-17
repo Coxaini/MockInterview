@@ -9,10 +9,10 @@ import {
 import {
     catchError,
     finalize,
+    first,
     Observable,
     Subject,
     switchMap,
-    takeWhile,
     tap,
 } from 'rxjs';
 import { AuthenticationService } from '../services/auth/authentication.service';
@@ -39,8 +39,9 @@ export class AuthInterceptor implements HttpInterceptor {
                     !request.url.includes('auth/refresh')
                 ) {
                     if (this.isRefreshing) {
+                        console.log(request);
                         return this.refreshTokenSubject$.pipe(
-                            takeWhile((isRefreshed) => isRefreshed),
+                            first((isRefreshed) => isRefreshed),
                             switchMap(() => next.handle(request)),
                         );
                     }
