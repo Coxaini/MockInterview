@@ -1,0 +1,27 @@
+<div class="flex flex-col items-center">
+    <table class="table w-auto">
+        <thead>
+            <tr>
+                <th>Mate</th>
+                <th>ProgrammingLanguage</th>
+                <th>Technologies</th>
+                <th>When</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (interview of interviews$ | async; track interview.id) {
+                <tr app-upcoming-interview-row [interview]="interview"></tr>
+            } @empty {
+                <tr>
+                    <td colspan="6">
+                        <h3 class="text-lg text-center">
+                            No interviews planed.
+                        </h3>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

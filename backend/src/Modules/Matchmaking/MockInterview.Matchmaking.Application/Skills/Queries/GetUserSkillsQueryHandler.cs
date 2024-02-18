@@ -1,10 +1,12 @@
 ﻿using FluentResults;
 using MediatR;
 using MockInterview.Matchmaking.Application.Abstractions.Repositories;
+using MockInterview.Matchmaking.Application.Skills.Models;
+using MockInterview.Matchmaking.Domain.Models;
 
 namespace MockInterview.Matchmaking.Application.Skills.Queries;
 
-public class GetUserSkillsQueryHandler : IRequestHandler<GetUserSkillsQuery, Result<IEnumerable<string>>>
+public class GetUserSkillsQueryHandler : IRequestHandler<GetUserSkillsQuery, Result<UserSkillsDto>>
 {
     private readonly ISkillRepository _skillRepository;
 
@@ -13,11 +15,15 @@ public class GetUserSkillsQueryHandler : IRequestHandler<GetUserSkillsQuery, Res
         _skillRepository = skillRepository;
     }
 
-    public async Task<Result<IEnumerable<string>>> Handle(GetUserSkillsQuery request,
+    public async Task<Result<UserSkillsDto>> Handle(GetUserSkillsQuery request,
         CancellationToken cancellationToken)
     {
-        var skills = await _skillRepository.GetUsersSkillsAsync(request.UserId);
+        var programmingLanguagesTask = _skillRepository.GetUsersProgrammingLanguagesAsync(request.UserId);
+        
+        var technologiesTask = _skillRepository.GetUserTechnologiesWithLanguagesAsync(request.UserId);
+        
+        await Task.WhenAll(programmingLanguagesTask, technologiesTask);
 
-        return Result.Ok(skills.Select(s => s.Name));
+        return new UserSkillsDto(await programmingLanguagesTask, await technologiesTask);
     }
 }

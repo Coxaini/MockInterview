@@ -1,0 +1,96 @@
+<div
+    class="flex gap-x-1.5 relative transition-all my-2.5 self-center"
+    [style.left.%]="leftDaysOffset()"
+>
+    @for (dateSlot of dateSlots; track $index) {
+        <div class="indicator">
+            @if (isToday(dateSlot.date)) {
+                <span
+                    class="indicator-item indicator-start badge badge-secondary"
+                    >today</span
+                >
+            }
+            <button
+                class="btn btn-sm"
+                [ngClass]="
+                    $index === currentDateIndex()
+                        ? 'btn-primary text-lg font-bold'
+                        : 'btn-outline'
+                "
+                (click)="changeCurrentDateIndex($index)"
+            >
+                @if ($index === currentDateIndex()) {
+                    {{ dateSlot.date | date: "EEEE" }}
+                } @else {
+                    {{ dateSlot.date | date: "EEEEEE" }}
+                }
+            </button>
+        </div>
+    }
+</div>
+<div class="flex w-full relative items-center">
+    <button
+        class="absolute left-0 hover:animate-pulse z-10 h-full"
+        [disabled]="isFirstDayIndex()"
+        (click)="prev()"
+    >
+        <ng-icon
+            name="heroChevronDoubleLeft"
+            [color]="isFirstDayIndex() ? 'gray' : 'white'"
+        ></ng-icon>
+    </button>
+    <div
+        class="flex w-max relative transition-all"
+        [style.left]="leftTimesOffset()"
+    >
+        @for (
+            dateSlot of dateSlots;
+            track dateSlotIndex;
+            let dateSlotIndex = $index
+        ) {
+            <div
+                class="grid grid-cols-none sm:grid-cols-5 auto-cols-auto w-[calc(100vw-2rem)] sm:w-[568px] px-7 gap-1.5 h-full overflow-x-clip p-1.5"
+            >
+                @for (
+                    timeSlot of dateSlot.timeSlots;
+                    track timeSlot.startTime
+                ) {
+                    <button
+                        class="btn btn-md no-animation relative"
+                        [disabled]="disabled"
+                        [tabIndex]="
+                            currentDateIndex() === dateSlotIndex ? 1 : -1
+                        "
+                        [ngClass]="
+                            timeSlot.startTime === selectedDateTime
+                                ? 'btn-success'
+                                : 'btn-outline'
+                        "
+                        (click)="selectDateTime(timeSlot.startTime)"
+                    >
+                        <div
+                            class="calendar-cell-ribbon"
+                            [ngStyle]="{
+                                'border-top-color':
+                                    timeSlot.color || 'transparent'
+                            }"
+                        ></div>
+                        <span>{{
+                            timeSlot.startTime | date: "shortTime"
+                        }}</span>
+                    </button>
+                }
+            </div>
+        }
+    </div>
+    <button
+        class="absolute right-0 hover:animate-pulse z-10 h-full"
+        [disabled]="isLastDayIndex()"
+        (click)="next()"
+    >
+        <ng-icon
+            name="heroChevronDoubleRight"
+            [color]="isLastDayIndex() ? 'gray' : 'white'"
+        ></ng-icon>
+    </button>
+</div>

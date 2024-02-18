@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="MassTransit.Abstractions" Version="8.1.3"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0"/>
+        <PackageReference Include="MongoDB.Bson" Version="2.23.1"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\..\Shared\Shared.Core\Shared.Core.csproj"/>
+        <ProjectReference Include="..\..\Identity\MockInterview.Identity.Contracts\MockInterview.Identity.Contracts.csproj"/>
+        <ProjectReference Include="..\..\Matchmaking\MockInterview.Matchmaking.Contracts\MockInterview.Matchmaking.Contracts.csproj"/>
+        <ProjectReference Include="..\MockInterview.Interviews.Contracts\MockInterview.Interviews.Contracts.csproj"/>
+        <ProjectReference Include="..\MockInterview.Interviews.DataAccess\MockInterview.Interviews.DataAccess.csproj"/>
+        <ProjectReference Include="..\MockInterview.Interviews.Domain\MockInterview.Interviews.Domain.csproj"/>
+    </ItemGroup>
+
+</Project>

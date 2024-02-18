@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Options;
 using MockInterview.Matchmaking.Application.Abstractions.Repositories;
 using MockInterview.Matchmaking.Domain.Models;
+using MockInterview.Matchmaking.Domain.Models.Skills;
+using MockInterview.Matchmaking.Domain.Models.Users;
 using Neo4j.Driver;
 using Shared.Persistence.Neo4j.Common.Repositories;
 using Shared.Persistence.Neo4j.Settings;

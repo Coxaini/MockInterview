@@ -1,0 +1,7 @@
+:host {
+    @apply flex flex-col min-h-[5rem];
+}
+
+.cdk-drag-placeholder {
+  opacity: 0;
+}

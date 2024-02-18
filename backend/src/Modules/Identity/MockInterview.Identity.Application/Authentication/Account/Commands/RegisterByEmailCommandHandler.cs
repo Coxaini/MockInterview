@@ -18,11 +18,11 @@ namespace MockInterview.Identity.Application.Authentication.Account.Commands;
 public class RegisterByEmailCommandHandler : IRequestHandler<RegisterByEmailCommand, Result<AuthenticationResult>>
 {
     private readonly IdentityDbContext _dbContext;
-    private readonly IPasswordHasher _passwordHasher;
-    private readonly IJwtTokenGenerator _jwtTokenGenerator;
-    private readonly IRefreshTokenGenerator _refreshTokenGenerator;
-    private readonly IMapper _mapper;
     private readonly IEventBus _eventBus;
+    private readonly IJwtTokenGenerator _jwtTokenGenerator;
+    private readonly IMapper _mapper;
+    private readonly IPasswordHasher _passwordHasher;
+    private readonly IRefreshTokenGenerator _refreshTokenGenerator;
 
     public RegisterByEmailCommandHandler(IdentityDbContext dbContext, IPasswordHasher passwordHasher,
         IJwtTokenGenerator jwtTokenGenerator, IRefreshTokenGenerator refreshTokenGenerator, IMapper mapper,
@@ -51,7 +51,8 @@ public class RegisterByEmailCommandHandler : IRequestHandler<RegisterByEmailComm
 
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        await _eventBus.PublishAsync(new UserCreatedEvent(user.Id, user.Email, user.Username),
+        await _eventBus.PublishAsync(
+            new UserCreatedEvent(user.Id, user.Email, user.Username, user.Name, user.AvatarUrl),
             CancellationToken.None);
 
         string accessToken = _jwtTokenGenerator.GenerateToken(new UserClaims(user.Id, user.Email));

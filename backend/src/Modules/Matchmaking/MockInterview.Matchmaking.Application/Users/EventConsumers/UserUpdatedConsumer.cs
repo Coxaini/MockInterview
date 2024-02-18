@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using MockInterview.Identity.Contracts.Events;
 using MockInterview.Matchmaking.Application.Abstractions.Repositories;
 using MockInterview.Matchmaking.Domain.Models;
+using MockInterview.Matchmaking.Domain.Models.Users;
 
 namespace MockInterview.Matchmaking.Application.Users.EventConsumers;
 

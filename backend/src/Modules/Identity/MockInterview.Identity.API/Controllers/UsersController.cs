@@ -17,15 +17,14 @@ public class UsersController : ApiController
     }
 
     [HttpGet("profile")]
-    public async Task<IActionResult> GetProfileBy()
+    public async Task<ActionResult<UserDto>> GetProfile()
     {
         var result = await Mediator.Send(new GetUserQuery(UserId));
-        return Ok();
+        return MatchResult(result, Ok);
     }
 
     [HttpPost("profile")]
-    [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
-    public async Task<IActionResult> FillUserProfile(FillProfileRequest request)
+    public async Task<ActionResult<UserDto>> FillUserProfile(FillProfileRequest request)
     {
         var result = await Mediator.Send(new FillProfileCommand(UserId, request.Name,
             request.Location, request.Bio, request.YearsOfExperience));

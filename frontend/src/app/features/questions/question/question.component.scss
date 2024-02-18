@@ -1,0 +1,15 @@
+:host{
+    @apply flex;
+}
+
+.cdk-drop-list-dragging :host{
+    .question-action-menu{
+        visibility: hidden;
+    }
+}
+
+.cdk-drag-preview:host {
+    .question-action-menu{
+        visibility: hidden;
+    }
+}

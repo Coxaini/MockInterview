@@ -1,0 +1,22 @@
+<div class="my-10 flex flex-col items-center">
+    <div
+        class="card w-full sm:w-96 bg-transparent border-primary border-2 text-base-content"
+    >
+        <div class="card-body items-center text-center">
+            <h1 class="card-title text-2xl">Practice with random people</h1>
+            <div class="card-actions justify-end my-2.5">
+                <button
+                    (click)="openPlanInterviewModal()"
+                    class="btn btn-success btn-outline btn-lg btn-wide"
+                >
+                    Plan your interview
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="divider"></div>
+<div class="flex flex-col items-center">
+    <h1 class="text-2xl font-mono">Upcoming Interviews</h1>
+    <app-upcoming-interviews-table></app-upcoming-interviews-table>
+</div>

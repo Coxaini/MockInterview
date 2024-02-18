@@ -1,0 +1,11 @@
+<app-modal-layout [modalTitle]="data.title">
+    <span class="text-lg">{{ data.message }}</span>
+    <div class="flex w-full justify-center gap-5 mt-5">
+        <button class="btn btn-primary w-28" (click)="confirm()">
+            {{ data.confirmText }}
+        </button>
+        <button class="btn btn-error w-28" (click)="close()">
+            {{ data.cancelText }}
+        </button>
+    </div>
+</app-modal-layout>

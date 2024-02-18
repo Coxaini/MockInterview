@@ -33,17 +33,17 @@ public class ApiController : ControllerBase
         }
     }
 
-    protected IActionResult MatchResult<T>(Result<T> result, Func<T, IActionResult> onSuccess)
+    protected ActionResult MatchResult<T>(Result<T> result, Func<T, ActionResult> onSuccess)
     {
         return result.IsSuccess ? onSuccess(result.Value) : Problem(result.Errors);
     }
 
-    protected IActionResult MatchResult(Result result, Func<IActionResult> onSuccess)
+    protected ActionResult MatchResult(Result result, Func<ActionResult> onSuccess)
     {
         return result.IsSuccess ? onSuccess() : Problem(result.Errors);
     }
 
-    private IActionResult Problem(List<IError> errors)
+    private ActionResult Problem(List<IError> errors)
     {
         if (errors.Count is 0)
         {
@@ -58,7 +58,7 @@ public class ApiController : ControllerBase
         return Problem(errors[0]);
     }
 
-    private IActionResult Problem(IError error)
+    private ActionResult Problem(IError error)
     {
         int statusCode = error.Metadata["Type"] switch
         {
@@ -73,7 +73,7 @@ public class ApiController : ControllerBase
         return Problem(statusCode: statusCode, title: error.Message);
     }
 
-    private IActionResult ValidationProblem(List<IError> errors)
+    private ActionResult ValidationProblem(List<IError> errors)
     {
         var modelStateDictionary = new ModelStateDictionary();
 

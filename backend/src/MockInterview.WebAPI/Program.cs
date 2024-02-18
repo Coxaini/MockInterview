@@ -1,9 +1,13 @@
 using MockInterview.Identity.API;
+using MockInterview.InterviewOrchestrator;
+using MockInterview.Interviews.API;
 using MockInterview.Matchmaking.API;
 using MockInterview.WebAPI;
 using MockInterview.WebAPI.Middlewares;
 using Shared.Messaging;
+using Shared.Scheduler;
 using Shared.Security;
+using DependencyInjection = MockInterview.Identity.Application.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,15 +16,19 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddJwtAuth(builder.Configuration);
+builder.Services.AddQuartzScheduler(builder.Configuration);
 
 builder.Services
     .AddWebApi(builder.Configuration)
     .AddIdentityModule(builder.Configuration)
     .AddMatchmakingModule(builder.Configuration)
+    .AddInterviewModule(builder.Configuration)
     .AddMessaging(builder.Configuration, new[]
     {
-        typeof(MockInterview.Identity.Application.DependencyInjection).Assembly,
-        typeof(MockInterview.Matchmaking.Application.DependencyInjection).Assembly
+        typeof(DependencyInjection).Assembly,
+        typeof(MockInterview.Matchmaking.Application.DependencyInjection).Assembly,
+        typeof(MockInterview.Interviews.Application.DependencyInjection).Assembly,
+        typeof(InterviewOrchestratorMassTransitConfiguration).Assembly
     });
 
 builder.Services.AddCors(options =>
@@ -51,10 +59,7 @@ app.UseMiddleware<AuthTokenSetterMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 
-if (!app.Environment.IsDevelopment())
-{
-    app.UseHttpsRedirection();
-}
+if (!app.Environment.IsDevelopment()) app.UseHttpsRedirection();
 
 app.UseIdentityModule();
 

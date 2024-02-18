@@ -2,6 +2,7 @@
 using MediatR;
 using MockInterview.Matchmaking.Application.Abstractions.Repositories;
 using MockInterview.Matchmaking.Domain.Models;
+using MockInterview.Matchmaking.Domain.Models.Skills;
 
 namespace MockInterview.Matchmaking.Application.Skills.Queries;
 

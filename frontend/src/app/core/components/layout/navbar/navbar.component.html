@@ -1,0 +1,82 @@
+<div class="navbar">
+    <div class="navbar-start">
+        <a class="btn btn-ghost text-xl" routerLink="/home">
+            <img
+                class="w-8 image-full"
+                src="assets/job-interview.png"
+                alt="Site logo"
+            />
+            Mock&#60;Interview&#62;
+        </a>
+    </div>
+    <div class="navbar-center hidden lg:flex">
+        <ul class="menu menu-horizontal p-0 text-xl [&.a]:p-0">
+            <ng-container *ngTemplateOutlet="pageLinks"></ng-container>
+        </ul>
+    </div>
+    <div class="navbar-end flex">
+        <div class="dropdown dropdown-end">
+            <button role="button" class="btn btn-ghost btn-circle lg:hidden">
+                <div class="w-10 rounded-full">
+                    <ng-icon name="heroBars3BottomRight" size="100%"></ng-icon>
+                </div>
+            </button>
+            <ul
+                tabindex="0"
+                class="p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52 font-bold z-10"
+            >
+                <li>
+                    <a class="flex flex-row items-center">
+                        <div class="w-10 rounded-full">
+                            <ng-icon
+                                name="heroClipboardDocumentList"
+                                size="100%"
+                            ></ng-icon>
+                        </div>
+                        <span class="ml-2">Questions Catalog</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="flex flex-row items-center">
+                        <div class="w-10 rounded-full">
+                            <ng-icon
+                                name="heroArchiveBox"
+                                size="100%"
+                            ></ng-icon>
+                        </div>
+                        <span class="ml-2">Last Interviews</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <button class="btn btn-ghost btn-circle">
+            <div class="w-10 rounded-full">
+                <ng-icon name="heroBell" size="100%"></ng-icon>
+            </div>
+        </button>
+        <button class="btn btn-ghost btn-circle avatar">
+            <div class="w-10 rounded-full">
+                <ng-icon name="heroUserCircle" size="100%"></ng-icon>
+            </div>
+        </button>
+    </div>
+</div>
+
+<ng-template #pageLinks>
+    <li>
+        <a class="flex flex-row items-center py-0">
+            <div class="w-10 rounded-full">
+                <ng-icon name="heroClipboardDocumentList" size="100%"></ng-icon>
+            </div>
+            <span class="ml-2">Questions Catalog</span>
+        </a>
+    </li>
+    <li>
+        <a class="flex flex-row items-center py-0">
+            <div class="w-10 rounded-full">
+                <ng-icon name="heroArchiveBox" size="100%"></ng-icon>
+            </div>
+            <span class="ml-2">Last Interviews</span>
+        </a>
+    </li>
+</ng-template>

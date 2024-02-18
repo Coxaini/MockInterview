@@ -1,9 +1,10 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ControlContainer } from '@angular/forms';
 import { Technology } from 'src/app/core/models/skills/technology';
 import { SkillsService } from 'src/app/core/services/skills/skills.service';
-import { Tile } from 'src/app/shared/components/tile-select/tile';
-import { Observable, combineLatest, map, shareReplay, startWith } from 'rxjs';
+import { TextWithIcon } from '@core/common/text-with-icon';
+import { combineLatest, map, Observable, startWith } from 'rxjs';
+import { ProgrammingLanguagesService } from '@core/services/skills/programming-languages.service';
 
 @Component({
     selector: 'app-fill-profile-skills',
@@ -20,22 +21,11 @@ export class FillProfileSkillsComponent implements OnInit {
     constructor(
         private skillsService: SkillsService,
         private parentContainer: ControlContainer,
+        private programmingLanguagesService: ProgrammingLanguagesService,
     ) {}
 
-    private languages: { fileName: string; name: string }[] = [
-        { name: 'C#', fileName: 'csharp' },
-        { name: 'C++', fileName: 'cplusplus' },
-        { name: 'C', fileName: 'c' },
-        { name: 'Go', fileName: 'go' },
-        { name: 'Java', fileName: 'java' },
-        { name: 'JavaScript', fileName: 'javascript' },
-        { name: 'PHP', fileName: 'php' },
-        { name: 'Python', fileName: 'python' },
-        { name: 'Ruby', fileName: 'ruby' },
-        { name: 'Swift', fileName: 'swift' },
-        { name: 'TypeScript', fileName: 'typescript' },
-        { name: 'Rust', fileName: 'rust' },
-    ];
+    private languages: TextWithIcon[] =
+        this.programmingLanguagesService.getProgrammingLanguagesWithIcons();
 
     ngOnInit(): void {
         this.selectedLanguages$ = this.parentContainer
@@ -70,10 +60,7 @@ export class FillProfileSkillsComponent implements OnInit {
 
     public technologiesNames$: Observable<string[]>;
 
-    public get tiles(): Tile[] {
-        return this.languages.map((skill) => ({
-            name: skill.name,
-            fileName: 'assets/langs/' + skill.fileName + '.svg',
-        }));
+    public get tiles(): TextWithIcon[] {
+        return this.languages;
     }
 }
