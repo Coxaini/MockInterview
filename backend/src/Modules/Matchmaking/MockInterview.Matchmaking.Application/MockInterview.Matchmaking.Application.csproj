@@ -7,7 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Folder Include="Interviews\EventConsumers\"/>
         <Folder Include="Users\"/>
     </ItemGroup>
 
@@ -22,6 +21,7 @@
         <ProjectReference Include="..\..\..\Libraries\MatchingGraph\MatchingGraph.csproj"/>
         <ProjectReference Include="..\..\..\Shared\Shared.Core\Shared.Core.csproj"/>
         <ProjectReference Include="..\..\Identity\MockInterview.Identity.Contracts\MockInterview.Identity.Contracts.csproj"/>
+        <ProjectReference Include="..\..\Interview\MockInterview.Interviews.Contracts\MockInterview.Interviews.Contracts.csproj"/>
         <ProjectReference Include="..\MockInterview.Matchmaking.Contracts\MockInterview.Matchmaking.Contracts.csproj"/>
         <ProjectReference Include="..\MockInterview.Matchmaking.Domain\MockInterview.Matchmaking.Domain.csproj"/>
     </ItemGroup>

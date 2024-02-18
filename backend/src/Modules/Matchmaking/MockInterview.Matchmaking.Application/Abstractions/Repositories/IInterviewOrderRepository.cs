@@ -10,6 +10,7 @@ public interface IInterviewOrderRepository
     Task<IList<InterviewOrder>> GetInterviewOrdersByStartDateTimeAsync(DateTime startsAt);
     Task<MatchedInterviewOrder?> GetBestMatchByMutualTechnologiesAsync(InterviewOrder matchOrder);
     Task<IList<InterviewOrder>> GetInterviewOrdersAtDateTimeAsync(DateTime dateTime);
-    Task DeleteMatchInterviewOrdersAsync(Guid firstOrderId, Guid secondOrderId);
+    Task CloseMatchInterviewOrdersAsync(Guid firstOrderId, Guid secondOrderId);
+    Task OpenInterviewOrderAsync(Guid orderId);
     Task DeleteInterviewOrderByIdAsync(Guid id);
 }

@@ -2,8 +2,9 @@
 
 public record ArrangeInterview(
     Guid InterviewOrderId,
-    Guid FirstCandidateId,
-    Guid SecondCandidateId,
+    Guid MatchedInterviewOrderId,
+    Guid InitiatorCandidateId,
+    Guid MatchedCandidateId,
     DateTime StartDateTime,
     string ProgrammingLanguage,
-    IEnumerable<string> Technologies);
+    IEnumerable<string> MutualTechnologies);

@@ -7,7 +7,7 @@ namespace MockInterview.Interviews.Application.Questions.Commands;
 
 public record AddQuestionCommand(
     Guid UserId,
-    Guid InterviewId,
+    Guid QuestionListId,
     string Text,
     string Tag,
-    DifficultyLevel DifficultyLevel) : IRequest<Result<InterviewQuestionModel>>;
+    DifficultyLevel DifficultyLevel) : IRequest<Result<InterviewQuestionDto>>;

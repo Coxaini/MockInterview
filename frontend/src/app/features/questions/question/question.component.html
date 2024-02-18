@@ -1,0 +1,36 @@
+@if (!isEdit) {
+    <div
+        class="flex items-center w-full rounded-box bg-base-300 p-4"
+        (mouseenter)="onMouseEnter()"
+        (mouseleave)="onMouseLeave()"
+    >
+        <div class="flex flex-col flex-1 gap-y-4">
+            <span class="text-lg break-all">{{ question.text }} </span>
+            @if (question.tag) {
+                <span class="badge badge-secondary font-bold">
+                    {{ question.tag }}
+                </span>
+            }
+        </div>
+        @if (isEditable) {
+            <div
+                class="px-2 flex gap-1 question-action-menu"
+                [class.invisible]="!isHovered"
+            >
+                <button class="btn btn-primary btn-sm" (click)="edit()">
+                    <ng-icon name="heroPencil" size="1rem"></ng-icon>
+                </button>
+                <button class="btn btn-error btn-sm" (click)="delete()">
+                    <ng-icon name="heroTrash" size="1rem"></ng-icon>
+                </button>
+            </div>
+        }
+    </div>
+} @else {
+    <app-question-editor
+        [question]="question"
+        [tags]="tags"
+        (cancel)="cancel()"
+        (save)="save($event)"
+    ></app-question-editor>
+}

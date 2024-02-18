@@ -8,9 +8,5 @@ public class InterviewQuestionConfiguration : IEntityTypeConfiguration<Interview
 {
     public void Configure(EntityTypeBuilder<InterviewQuestion> builder)
     {
-        builder
-            .HasOne(iq => iq.Author)
-            .WithMany()
-            .HasForeignKey(iq => iq.AuthorId);
     }
 }

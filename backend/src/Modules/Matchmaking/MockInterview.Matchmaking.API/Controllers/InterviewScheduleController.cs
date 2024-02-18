@@ -33,6 +33,14 @@ public class InterviewScheduleController : ApiController
         return MatchResult(result, Ok);
     }
 
+    [HttpDelete("requested-interviews/{interviewOrderId}")]
+    public async Task<ActionResult> CancelRequestedInterview(Guid interviewOrderId)
+    {
+        var result = await Mediator.Send(new CancelInterviewOrderCommand(interviewOrderId, UserId));
+
+        return MatchResult(result, NoContent);
+    }
+
     [HttpGet("suggested-times")]
     [AllowAnonymous]
     public async Task<ActionResult<IEnumerable<InterviewTimeSlotDto>>> GetSuggestedInterviewTimes(

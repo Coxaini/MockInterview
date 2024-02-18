@@ -29,15 +29,9 @@ namespace MockInterview.Interviews.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("FirstMemberId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("ProgrammingLanguage")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<Guid>("SecondMemberId")
-                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("timestamp with time zone");
@@ -48,20 +42,60 @@ namespace MockInterview.Interviews.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FirstMemberId");
-
-                    b.HasIndex("SecondMemberId");
-
                     b.ToTable("Interviews", "interviews");
                 });
 
-            modelBuilder.Entity("MockInterview.Interviews.Domain.Entities.Question", b =>
+            modelBuilder.Entity("MockInterview.Interviews.Domain.Entities.InterviewMember", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("InterviewId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("InterviewOrderId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("UserId", "InterviewId");
+
+                    b.HasIndex("InterviewId");
+
+                    b.HasIndex("InterviewOrderId");
+
+                    b.ToTable("InterviewMembers", "interviews");
+                });
+
+            modelBuilder.Entity("MockInterview.Interviews.Domain.Entities.InterviewOrder", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("AuthorId")
+                    b.Property<Guid>("CandidateId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ProgrammingLanguage")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("StartDateTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string[]>("Technologies")
+                        .IsRequired()
+                        .HasColumnType("text[]");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CandidateId");
+
+                    b.ToTable("InterviewOrders", "interviews");
+                });
+
+            modelBuilder.Entity("MockInterview.Interviews.Domain.Entities.InterviewQuestion", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
@@ -70,13 +104,17 @@ namespace MockInterview.Interviews.DataAccess.Migrations
                     b.Property<int>("DifficultyLevel")
                         .HasColumnType("integer");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
+                    b.Property<string>("Feedback")
                         .HasColumnType("text");
 
-                    b.Property<string>("ProgrammingLanguage")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<Guid>("InterviewQuestionsListId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("OrderIndex")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("Rating")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Tag")
                         .IsRequired()
@@ -88,13 +126,39 @@ namespace MockInterview.Interviews.DataAccess.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("InterviewQuestionsListId");
+
+                    b.ToTable("InterviewQuestions", "interviews");
+                });
+
+            modelBuilder.Entity("MockInterview.Interviews.Domain.Entities.InterviewQuestionsList", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("AuthorId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("InterviewId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("InterviewOrderId")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("IsFeedbackSent")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("Id");
+
                     b.HasIndex("AuthorId");
 
-                    b.ToTable("Questions", "interviews");
+                    b.HasIndex("InterviewId");
 
-                    b.HasDiscriminator<string>("Discriminator").HasValue("Question");
+                    b.HasIndex("InterviewOrderId")
+                        .IsUnique();
 
-                    b.UseTphMappingStrategy();
+                    b.ToTable("InterviewQuestionsLists", "interviews");
                 });
 
             modelBuilder.Entity("MockInterview.Interviews.Domain.Entities.User", b =>
@@ -119,47 +183,55 @@ namespace MockInterview.Interviews.DataAccess.Migrations
                     b.ToTable("Users", "interviews");
                 });
 
+            modelBuilder.Entity("MockInterview.Interviews.Domain.Entities.InterviewMember", b =>
+                {
+                    b.HasOne("MockInterview.Interviews.Domain.Entities.Interview", "Interview")
+                        .WithMany("Members")
+                        .HasForeignKey("InterviewId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MockInterview.Interviews.Domain.Entities.InterviewOrder", "InterviewOrder")
+                        .WithMany()
+                        .HasForeignKey("InterviewOrderId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("MockInterview.Interviews.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Interview");
+
+                    b.Navigation("InterviewOrder");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MockInterview.Interviews.Domain.Entities.InterviewOrder", b =>
+                {
+                    b.HasOne("MockInterview.Interviews.Domain.Entities.User", "Candidate")
+                        .WithMany()
+                        .HasForeignKey("CandidateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Candidate");
+                });
+
             modelBuilder.Entity("MockInterview.Interviews.Domain.Entities.InterviewQuestion", b =>
                 {
-                    b.HasBaseType("MockInterview.Interviews.Domain.Entities.Question");
-
-                    b.Property<string>("Feedback")
-                        .HasColumnType("text");
-
-                    b.Property<Guid>("InterviewId")
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("OrderIndex")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("Rating")
-                        .HasColumnType("integer");
-
-                    b.HasIndex("InterviewId");
-
-                    b.HasDiscriminator().HasValue("InterviewQuestion");
-                });
-
-            modelBuilder.Entity("MockInterview.Interviews.Domain.Entities.Interview", b =>
-                {
-                    b.HasOne("MockInterview.Interviews.Domain.Entities.User", "FirstMember")
-                        .WithMany()
-                        .HasForeignKey("FirstMemberId")
+                    b.HasOne("MockInterview.Interviews.Domain.Entities.InterviewQuestionsList", "InterviewQuestionsList")
+                        .WithMany("Questions")
+                        .HasForeignKey("InterviewQuestionsListId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MockInterview.Interviews.Domain.Entities.User", "SecondMember")
-                        .WithMany()
-                        .HasForeignKey("SecondMemberId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("FirstMember");
-
-                    b.Navigation("SecondMember");
+                    b.Navigation("InterviewQuestionsList");
                 });
 
-            modelBuilder.Entity("MockInterview.Interviews.Domain.Entities.Question", b =>
+            modelBuilder.Entity("MockInterview.Interviews.Domain.Entities.InterviewQuestionsList", b =>
                 {
                     b.HasOne("MockInterview.Interviews.Domain.Entities.User", "Author")
                         .WithMany()
@@ -167,19 +239,37 @@ namespace MockInterview.Interviews.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Author");
-                });
-
-            modelBuilder.Entity("MockInterview.Interviews.Domain.Entities.InterviewQuestion", b =>
-                {
-                    b.HasOne("MockInterview.Interviews.Domain.Entities.Interview", null)
-                        .WithMany("Questions")
+                    b.HasOne("MockInterview.Interviews.Domain.Entities.Interview", "Interview")
+                        .WithMany("QuestionsLists")
                         .HasForeignKey("InterviewId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("MockInterview.Interviews.Domain.Entities.InterviewOrder", "InterviewOrder")
+                        .WithOne("QuestionsList")
+                        .HasForeignKey("MockInterview.Interviews.Domain.Entities.InterviewQuestionsList", "InterviewOrderId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Author");
+
+                    b.Navigation("Interview");
+
+                    b.Navigation("InterviewOrder");
                 });
 
             modelBuilder.Entity("MockInterview.Interviews.Domain.Entities.Interview", b =>
+                {
+                    b.Navigation("Members");
+
+                    b.Navigation("QuestionsLists");
+                });
+
+            modelBuilder.Entity("MockInterview.Interviews.Domain.Entities.InterviewOrder", b =>
+                {
+                    b.Navigation("QuestionsList")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("MockInterview.Interviews.Domain.Entities.InterviewQuestionsList", b =>
                 {
                     b.Navigation("Questions");
                 });

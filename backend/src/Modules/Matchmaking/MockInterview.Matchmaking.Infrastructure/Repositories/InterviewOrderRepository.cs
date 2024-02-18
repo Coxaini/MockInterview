@@ -211,7 +211,7 @@ public class InterviewOrderRepository : GraphRepository, IInterviewOrderReposito
         });
     }
 
-    public async Task DeleteMatchInterviewOrdersAsync(Guid firstOrderId, Guid secondOrderId)
+    public async Task CloseMatchInterviewOrdersAsync(Guid firstOrderId, Guid secondOrderId)
     {
         await using var session = OpenSession();
 
@@ -223,12 +223,37 @@ public class InterviewOrderRepository : GraphRepository, IInterviewOrderReposito
                 WHERE i.id IN [$FirstOrderId, $SecondOrderId]
                 CALL apoc.atomic.subtract(ts, 'candidatesCount', 1)
                 YIELD oldValue, newValue
-                DETACH DELETE i
+                REMOVE i:INTERVIEW_ORDER
+                SET i:INTERVIEW_ORDER_CLOSED
                 """,
                 new
                 {
                     FirstOrderId = firstOrderId.ToString(),
                     SecondOrderId = secondOrderId.ToString()
+                }
+            );
+
+            await cursor.ConsumeAsync();
+        });
+    }
+
+    public async Task OpenInterviewOrderAsync(Guid orderId)
+    {
+        await using var session = OpenSession();
+
+        await session.ExecuteWriteAsync(async tx =>
+        {
+            var cursor = await tx.RunAsync(
+                """
+                MATCH (i:INTERVIEW_ORDER_CLOSED {id: $OrderId})-[:SCHEDULED_AT]->(ts:TIME_SLOT)
+                CALL apoc.atomic.add(ts, 'candidatesCount', 1)
+                YIELD oldValue, newValue
+                REMOVE i:INTERVIEW_ORDER_CLOSED
+                SET i:INTERVIEW_ORDER
+                """,
+                new
+                {
+                    OrderId = orderId.ToString()
                 }
             );
 

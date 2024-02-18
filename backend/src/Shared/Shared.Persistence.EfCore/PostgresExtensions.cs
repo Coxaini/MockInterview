@@ -18,8 +18,6 @@ public static class PostgresExtensions
                 sqlOptions.MigrationsHistoryTable($"__{typeof(TDbContext).Name}MigrationsHistory", schema);
                 sqlOptions.MigrationsAssembly(migrationAssembly?.GetName().Name ??
                                               Assembly.GetExecutingAssembly().GetName().Name);
-
-                sqlOptions.EnableRetryOnFailure(15, TimeSpan.FromSeconds(30), null);
             }));
 
         using var scope = services.BuildServiceProvider().CreateScope();

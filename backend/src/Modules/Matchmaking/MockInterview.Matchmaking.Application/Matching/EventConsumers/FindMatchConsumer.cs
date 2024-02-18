@@ -49,6 +49,6 @@ public class FindMatchConsumer : IConsumer<FindMatch>
             bestMatch.StartDateTime, bestMatch.ProgrammingLanguage,
             bestMatch.MutualTechnologies));
 
-        await _interviewOrderRepository.DeleteMatchInterviewOrdersAsync(order.Id, bestMatch.InterviewOrderId);
+        await _interviewOrderRepository.CloseMatchInterviewOrdersAsync(order.Id, bestMatch.InterviewOrderId);
     }
 }

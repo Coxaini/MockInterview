@@ -20,6 +20,7 @@ public class InterviewOrderStateMachine : MassTransitStateMachine<InterviewOrder
         _logger = logger;
 
         Event(() => InterviewOrderSubmitted, x => x.CorrelateById(m => m.Message.Id));
+        Event(() => InterviewOrderPersisted, x => x.CorrelateById(m => m.Message.InterviewOrderId));
         Event(() => MatchFoundEvent, x => x.CorrelateById(m => m.Message.InitiatorInterviewOrderId));
         Event(() => MatchNotFoundEvent, x => x.CorrelateById(m => m.Message.InterviewOrderId));
         Event(() => InterviewOrderNotFoundEvent, x => x.CorrelateById(m => m.Message.InterviewOrderId));
@@ -38,31 +39,42 @@ public class InterviewOrderStateMachine : MassTransitStateMachine<InterviewOrder
                     context.Saga.ProgrammingLanguage = context.Message.ProgrammingLanguage;
                     context.Saga.Technologies = context.Message.Technologies;
                 })
-                .Publish(x => new FindMatch(x.Saga.CorrelationId))
+                .Publish(x => new PersistInterviewOrder(x.Saga.CorrelationId,
+                    x.Saga.InitiatorCandidateId,
+                    x.Saga.StartDateTime,
+                    x.Saga.ProgrammingLanguage,
+                    x.Saga.Technologies))
                 .TransitionTo(Submitted));
 
         During(Submitted,
+            When(InterviewOrderPersisted)
+                .Publish(x => new FindMatch(x.Saga.CorrelationId))
+                .TransitionTo(Persisted));
+
+        During(Persisted,
             When(MatchFoundEvent)
                 .Then(context =>
                 {
                     context.Saga.MatchedCandidateId = context.Message.MatchCandidateId;
-                    context.Saga.MatchInterviewOrderId = context.Message.MatchInterviewOrderId;
+                    context.Saga.MatchedInterviewOrderId = context.Message.MatchInterviewOrderId;
+                    context.Saga.MutualTechnologies = context.Message.MutualTechnologies;
                 })
                 .Publish(x =>
                     new ArrangeInterview(x.Saga.CorrelationId,
+                        x.Saga.MatchedInterviewOrderId,
                         x.Saga.InitiatorCandidateId,
                         x.Saga.MatchedCandidateId,
                         x.Saga.StartDateTime,
                         x.Saga.ProgrammingLanguage,
-                        x.Saga.Technologies))
+                        x.Saga.MutualTechnologies))
                 .TransitionTo(MatchFound));
 
-        During(Submitted,
+        During(Persisted,
             When(MatchNotFoundEvent)
                 .Then(x => _logger.LogInformation("Match not found for {InterviewOrderId}", x.Message.InterviewOrderId))
                 .Finalize());
 
-        During(Submitted,
+        During(Persisted,
             When(InterviewOrderNotFoundEvent)
                 .Then(x => _logger.LogWarning("Interview order not found for {InterviewOrderId}",
                     x.Message.InterviewOrderId))
@@ -72,23 +84,28 @@ public class InterviewOrderStateMachine : MassTransitStateMachine<InterviewOrder
             When(InterviewArrangedEvent)
                 .Then(x => _logger.LogInformation("Interview arranged for {InterviewOrderId}",
                     x.Message.InterviewOrderId))
+                .Then(x => x.Saga.InterviewId = x.Message.InterviewId)
                 .Publish(x =>
-                    new CloseInterviewOrderPair(x.Saga.CorrelationId, x.Saga.MatchInterviewOrderId))
+                    new CloseInterviewOrderPair(x.Saga.CorrelationId, x.Saga.MatchedInterviewOrderId))
                 .TransitionTo(InterviewArranged));
 
         During(InterviewArranged,
             When(InterviewOrderPairDeletedEvent)
                 .Then(x => _logger.LogInformation(
                     "Interview order pair deleted for {InterviewOrderId} and {MatchInterviewOrderId} order",
-                    x.Saga.CorrelationId, x.Saga.MatchInterviewOrderId))
+                    x.Saga.CorrelationId, x.Saga.MatchedInterviewOrderId))
                 .Finalize());
+
+        SetCompletedWhenFinalized();
     }
 
     public State Submitted { get; private set; }
+    public State Persisted { get; private set; }
     public State MatchFound { get; private set; }
     public State InterviewArranged { get; private set; }
 
     public Event<InterviewOrderSubmitted> InterviewOrderSubmitted { get; private set; }
+    public Event<InterviewOrderPersisted> InterviewOrderPersisted { get; private set; }
     public Event<MatchFound> MatchFoundEvent { get; private set; }
     public Event<MatchNotFound> MatchNotFoundEvent { get; private set; }
     public Event<InterviewOrderNotFound> InterviewOrderNotFoundEvent { get; private set; }

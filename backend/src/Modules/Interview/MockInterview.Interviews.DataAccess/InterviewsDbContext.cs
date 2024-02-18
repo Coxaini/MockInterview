@@ -14,9 +14,12 @@ public class InterviewsDbContext : DbContext
     }
 
     public DbSet<Interview> Interviews { get; set; }
+
+    public DbSet<InterviewMember> InterviewMembers { get; set; }
     public DbSet<User> Users { get; set; }
+    public DbSet<InterviewQuestionsList> InterviewQuestionsLists { get; set; }
     public DbSet<InterviewQuestion> InterviewQuestions { get; set; }
-    public DbSet<Question> Questions { get; set; }
+    public DbSet<InterviewOrder> InterviewOrders { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

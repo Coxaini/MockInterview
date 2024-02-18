@@ -13,19 +13,17 @@ public class Question : BaseEntity
     public User Author { get; protected set; } = null!;
     public Guid AuthorId { get; protected set; }
     public DifficultyLevel DifficultyLevel { get; protected set; }
-    public string ProgrammingLanguage { get; protected set; } = string.Empty;
     public string Tag { get; protected set; } = string.Empty;
     public DateTime CreatedAt { get; protected set; }
 
-    public static Question Create(string text, Guid authorId, DifficultyLevel difficultyLevel,
-        string programmingLanguage, string tag)
+    public static Question Create(string text, Guid authorId, DifficultyLevel difficultyLevel, string tag)
     {
         return new Question
         {
+            Id = Guid.NewGuid(),
             Text = text,
             AuthorId = authorId,
             DifficultyLevel = difficultyLevel,
-            ProgrammingLanguage = programmingLanguage,
             Tag = tag,
             CreatedAt = DateTime.UtcNow
         };

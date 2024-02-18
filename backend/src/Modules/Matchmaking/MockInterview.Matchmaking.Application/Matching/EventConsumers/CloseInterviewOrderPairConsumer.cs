@@ -17,7 +17,7 @@ public class CloseInterviewOrderPairConsumer : IConsumer<CloseInterviewOrderPair
     public async Task Consume(ConsumeContext<CloseInterviewOrderPair> context)
     {
         var command = context.Message;
-        await _interviewOrderRepository.DeleteMatchInterviewOrdersAsync(command.InitiatorOrderId, command.MatchOrderId);
+        await _interviewOrderRepository.CloseMatchInterviewOrdersAsync(command.InitiatorOrderId, command.MatchOrderId);
 
         await context.Publish(new InterviewOrderPairDeleted(command.InitiatorOrderId, command.MatchOrderId));
     }

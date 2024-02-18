@@ -8,24 +8,15 @@ public class InterviewConfiguration : IEntityTypeConfiguration<Interview>
 {
     public void Configure(EntityTypeBuilder<Interview> builder)
     {
-        builder
-            .HasOne(i => i.FirstMember)
-            .WithMany()
-            .HasForeignKey(i => i.FirstMemberId);
-
-        builder
-            .HasOne(i => i.SecondMember)
-            .WithMany()
-            .HasForeignKey(i => i.SecondMemberId);
-
-        builder
-            .HasMany(i => i.Questions)
-            .WithOne()
-            .HasForeignKey(iq => iq.InterviewId);
-
         builder.Property(i => i.Tags);
 
-        builder.Ignore(i => i.FirstMemberQuestions);
-        builder.Ignore(i => i.SecondMemberQuestions);
+        builder
+            .HasMany(i => i.QuestionsLists)
+            .WithOne(l => l.Interview)
+            .HasForeignKey(ql => ql.InterviewId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        /*builder.Ignore(i => i.FirstMemberQuestions);
+        builder.Ignore(i => i.SecondMemberQuestions);*/
     }
 }

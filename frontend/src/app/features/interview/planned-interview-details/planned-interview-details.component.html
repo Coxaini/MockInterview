@@ -1,0 +1,50 @@
+<div class="card-body">
+    <div class="flex card-title">
+        <h2 class="text-2xl flex-1 font-bold">
+            {{ interviewDetails.programmingLanguage }}
+            @if (interviewDetails.type === "arranged") {
+                Interview
+            } @else {
+                Interview Order
+            }
+        </h2>
+        @if (programmingLanguageIcon$ | async; as programmingLanguageIcon) {
+            <svg xmlns="http://www.w3.org/2000/svg" width="32px" height="32px">
+                <image
+                    width="32px"
+                    height="32px"
+                    [attr.xlink:href]="programmingLanguageIcon"
+                ></image>
+            </svg>
+        }
+    </div>
+    <div class="grid grid-cols-[auto_2fr] gap-2.5 items-center text-lg">
+        @if (interviewDetails.mate) {
+            <span class="col-span-2 font-bold"> Interviewer </span>
+            @if (interviewDetails.mate.avatarUrl) {
+                <img
+                    [src]="interviewDetails.mate.avatarUrl"
+                    alt="Avatar"
+                    class="w-12 h-12 rounded-full"
+                />
+            } @else {
+                <ng-icon name="heroUserCircle"></ng-icon>
+            }
+            <span>{{ interviewDetails.mate.name }}</span>
+        }
+        <span class="col-span-2 font-bold">Start time</span>
+        <ng-icon name="heroCalendarDays"></ng-icon>
+        <span>{{
+            interviewDetails.startDateTime | date: "MMM d, y, h:mm a"
+        }}</span>
+        <span class="col-span-2 font-bold">Tags</span>
+        <ng-icon name="heroTag"></ng-icon>
+        <div class="flex flex-wrap gap-1">
+            @for (tag of interviewDetails.tags; track tag) {
+                <span class="badge badge-secondary font-bold">
+                    {{ tag }}
+                </span>
+            }
+        </div>
+    </div>
+</div>

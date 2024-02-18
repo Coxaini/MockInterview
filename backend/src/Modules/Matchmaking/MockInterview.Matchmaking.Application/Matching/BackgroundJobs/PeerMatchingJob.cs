@@ -36,9 +36,9 @@ public class PeerMatchingJob : IJob
             await _eventBus
                 .PublishAsync(new MatchFound(first.Id, second.Id,
                     first.CandidateId, second.CandidateId,
-                    first.StartDateTime, first.ProgrammingLanguage, first.Technologies));
+                    first.StartDateTime, first.ProgrammingLanguage, first.Technologies.Intersect(second.Technologies)));
 
-            await _interviewOrderRepository.DeleteMatchInterviewOrdersAsync(first.Id, second.Id);
+            await _interviewOrderRepository.CloseMatchInterviewOrdersAsync(first.Id, second.Id);
         }
     }
 }

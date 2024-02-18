@@ -7,4 +7,4 @@ public record MatchFound(
     Guid MatchCandidateId,
     DateTime StartDateTime,
     string ProgrammingLanguage,
-    IEnumerable<string> Technologies);
+    IEnumerable<string> MutualTechnologies);

@@ -15,6 +15,8 @@ public class InterviewOrderState : SagaStateMachineInstance
     public string ProgrammingLanguage { get; set; }
     public IEnumerable<string> Technologies { get; set; }
 
-    public Guid MatchInterviewOrderId { get; set; }
+    public IEnumerable<string> MutualTechnologies { get; set; }
+    public Guid MatchedInterviewOrderId { get; set; }
+    public Guid? InterviewId { get; set; }
     public Guid CorrelationId { get; set; }
 }

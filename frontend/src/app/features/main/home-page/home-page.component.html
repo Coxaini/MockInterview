@@ -18,23 +18,5 @@
 <div class="divider"></div>
 <div class="flex flex-col items-center">
     <h1 class="text-2xl font-mono">Upcoming Interviews</h1>
-</div>
-<div class="flex flex-col items-center">
-    <table class="table w-auto">
-        <thead>
-            <tr>
-                <th>Mate</th>
-                <th>ProgrammingLanguage</th>
-                <th>Technologies</th>
-                <th>Time</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @for (interview of interviews$ | async; track interview.id) {
-                <tr app-upcoming-interview-row [interview]="interview"></tr>
-            }
-        </tbody>
-    </table>
+    <app-upcoming-interviews-table></app-upcoming-interviews-table>
 </div>

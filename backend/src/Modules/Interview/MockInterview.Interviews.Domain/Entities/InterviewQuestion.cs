@@ -1,31 +1,50 @@
 ﻿using MockInterview.Interviews.Domain.Enumerations;
+using Shared.Domain.Entities;
 
 namespace MockInterview.Interviews.Domain.Entities;
 
-public class InterviewQuestion : Question
+public class InterviewQuestion : BaseEntity
 {
     private InterviewQuestion()
     {
     }
 
-    public Guid InterviewId { get; private set; }
+    public Guid InterviewQuestionsListId { get; private set; }
+    public InterviewQuestionsList InterviewQuestionsList { get; private set; } = null!;
     public int OrderIndex { get; private set; }
     public int? Rating { get; private set; }
     public string? Feedback { get; private set; }
+    public string Text { get; private set; } = string.Empty;
+    public DifficultyLevel DifficultyLevel { get; private set; }
+    public string Tag { get; private set; } = string.Empty;
+    public DateTime CreatedAt { get; private set; }
 
-    public static InterviewQuestion Create(string text, Guid authorId, DifficultyLevel difficultyLevel,
-        string programmingLanguage, string tag, Guid interviewId, int orderIndex)
+    public static InterviewQuestion Create(InterviewQuestionsList list, string text,
+        DifficultyLevel difficultyLevel, string tag, int orderIndex)
     {
         return new InterviewQuestion
         {
+            Id = Guid.NewGuid(),
+            InterviewQuestionsListId = list.Id,
+            InterviewQuestionsList = list,
             Text = text,
-            AuthorId = authorId,
             DifficultyLevel = difficultyLevel,
-            ProgrammingLanguage = programmingLanguage,
             Tag = tag,
-            InterviewId = interviewId,
-            OrderIndex = orderIndex
+            OrderIndex = orderIndex,
+            CreatedAt = DateTime.UtcNow
         };
+    }
+
+    public void Update(string text, string tag, DifficultyLevel difficultyLevel)
+    {
+        Text = text;
+        Tag = tag;
+        DifficultyLevel = difficultyLevel;
+    }
+
+    public void SetOrderIndex(int orderIndex)
+    {
+        OrderIndex = orderIndex;
     }
 
     public void SetFeedback(int rating, string feedback)

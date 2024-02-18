@@ -29,7 +29,7 @@ export class ProgrammingLanguagesService {
         return this.languages;
     }
 
-    public getProgrammingLanguageWithIcons(
+    public getProgrammingLanguageWithIcon(
         name: string,
     ): TextWithIcon | undefined {
         return this.languages.find((skill) => skill.name === name);

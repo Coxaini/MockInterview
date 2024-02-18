@@ -17,6 +17,13 @@ const routes: Routes = [
                 path: 'home',
                 component: HomePageComponent,
             },
+            {
+                path: '',
+                loadChildren: () =>
+                    import('../interview/interview.module').then(
+                        (m) => m.InterviewModule,
+                    ),
+            },
         ],
     },
 ];

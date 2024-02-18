@@ -2,14 +2,15 @@
 using MapsterMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using MockInterview.Interviews.Application.Common.Errors;
+using MockInterview.Interviews.Application.Questions.Errors;
 using MockInterview.Interviews.Application.Questions.Models;
 using MockInterview.Interviews.DataAccess;
 using MockInterview.Interviews.Domain.Entities;
+using MockInterview.Interviews.Domain.Extensions;
 
 namespace MockInterview.Interviews.Application.Questions.Commands;
 
-public class AddQuestionCommandHandler : IRequestHandler<AddQuestionCommand, Result<InterviewQuestionModel>>
+public class AddQuestionCommandHandler : IRequestHandler<AddQuestionCommand, Result<InterviewQuestionDto>>
 {
     private readonly InterviewsDbContext _dbContext;
     private readonly IMapper _mapper;
@@ -20,26 +21,33 @@ public class AddQuestionCommandHandler : IRequestHandler<AddQuestionCommand, Res
         _mapper = mapper;
     }
 
-    public async Task<Result<InterviewQuestionModel>> Handle(AddQuestionCommand request,
+    public async Task<Result<InterviewQuestionDto>> Handle(AddQuestionCommand request,
         CancellationToken cancellationToken)
     {
-        var interview = await _dbContext.Interviews
-            .FirstOrDefaultAsync(i => i.Id == request.InterviewId, cancellationToken);
+        var questionList = await _dbContext.InterviewQuestionsLists
+            .Include(l => l.Interview)
+            .FirstOrDefaultAsync(l => l.Id == request.QuestionListId
+                                      && l.AuthorId == request.UserId,
+                cancellationToken);
 
-        if (interview is null) return Result.Fail(InterviewErrors.InterviewNotFound);
+        if (questionList is null) return Result.Fail(QuestionListErrors.QuestionListNotFound);
 
-        int maxOrderIndex = await _dbContext.InterviewQuestions
-            .Where(q => q.InterviewId == request.InterviewId && q.AuthorId == request.UserId)
-            .MaxAsync(q => q.OrderIndex, cancellationToken);
+        if (questionList.Interview?.CanModifyQuestions() == false)
+            return Result.Fail(QuestionErrors.CannotModifyQuestionList);
 
-        var question = InterviewQuestion.Create(request.Text, request.UserId, request.DifficultyLevel,
-            interview.ProgrammingLanguage, request.Tag, request.InterviewId,
+        int maxOrderIndex = await _dbContext.InterviewQuestionsLists
+            .Where(l => l.Id == request.QuestionListId)
+            .SelectMany(l => l.Questions)
+            .MaxAsync(q => (int?)q.OrderIndex, cancellationToken) ?? -1;
+
+        var question = InterviewQuestion.Create(questionList, request.Text, request.DifficultyLevel,
+            request.Tag,
             maxOrderIndex + 1);
 
-        interview.AddQuestion(question);
+        _dbContext.InterviewQuestions.Add(question);
 
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        return Result.Ok(_mapper.Map<InterviewQuestionModel>(question));
+        return Result.Ok(_mapper.Map<InterviewQuestionDto>(question));
     }
 }

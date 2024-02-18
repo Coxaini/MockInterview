@@ -1,0 +1,41 @@
+<form
+    [formGroup]="questionForm"
+    (submit)="saveQuestion()"
+    class="flex flex-col border-neutral border-2 rounded-btn"
+>
+    <textarea
+        #textInput
+        type="text"
+        formControlName="text"
+        placeholder="Enter question text"
+        appTextareaAutosize
+        class="textarea textarea-bordered text-lg w-full resize-none"
+    ></textarea>
+    <div class="divider m-0 h-0"></div>
+    <div class="flex justify-between m-2 gap-1">
+        <select formControlName="tag" class="select select-bordered select-sm">
+            <option value="" disabled selected>Select tag</option>
+            @for (tag of tags; track $index) {
+                <option [value]="tag">
+                    {{ tag }}
+                </option>
+            }
+        </select>
+        <div class="flex gap-x-1">
+            <button type="submit" class="btn btn-primary btn-sm">
+                @if (question) {
+                    Save
+                } @else {
+                    Add
+                }
+            </button>
+            <button
+                type="button"
+                class="btn btn-error btn-sm"
+                (click)="cancelEdit()"
+            >
+                Cancel
+            </button>
+        </div>
+    </div>
+</form>

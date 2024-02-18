@@ -23,15 +23,15 @@ public class GetInterviewsQueryHandler : IRequestHandler<GetInterviewsQuery, Res
         CancellationToken cancellationToken)
     {
         var interviews = await _dbContext.Interviews
-            .Include(i => i.FirstMember)
-            .Include(i => i.SecondMember)
-            .Where(i => i.FirstMemberId == request.UserId || i.SecondMemberId == request.UserId)
+            .Include(i => i.Members)
+            .ThenInclude(m => m.User)
+            .Where(i => i.Members.Any(m => m.UserId == request.UserId))
             .ToListAsync(cancellationToken);
 
         var results = interviews.Select(i => new UserInterviewDto
         (
             i.Id,
-            _mapper.Map<UserDto>(i.FirstMemberId == request.UserId ? i.SecondMember : i.FirstMember),
+            _mapper.Map<UserDto>(i.GetMateOfMember(request.UserId).User),
             i.StartTime,
             i.EndTime,
             i.ProgrammingLanguage,

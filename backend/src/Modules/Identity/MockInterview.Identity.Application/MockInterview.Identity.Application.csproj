@@ -12,8 +12,8 @@
         <PackageReference Include="Mapster" Version="7.4.0"/>
         <PackageReference Include="Mapster.DependencyInjection" Version="1.0.1"/>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0"/>
-        <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="6.15.1"/>
-        <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.15.1"/>
+        <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="7.3.0" />
+        <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="7.3.0" />
     </ItemGroup>
 
 
