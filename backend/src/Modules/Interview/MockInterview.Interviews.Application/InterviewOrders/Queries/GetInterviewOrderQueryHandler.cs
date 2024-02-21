@@ -10,7 +10,7 @@ using MockInterview.Interviews.DataAccess;
 namespace MockInterview.Interviews.Application.InterviewOrders.Queries;
 
 public class
-    GetInterviewOrderQueryHandler : IRequestHandler<GetInterviewOrderQuery, Result<UpcomingInterviewDetailsDto>>
+    GetInterviewOrderQueryHandler : IRequestHandler<GetInterviewOrderQuery, Result<InterviewDetailsDto>>
 {
     private readonly InterviewsDbContext _dbContext;
     private readonly IMapper _mapper;
@@ -21,7 +21,7 @@ public class
         _mapper = mapper;
     }
 
-    public async Task<Result<UpcomingInterviewDetailsDto>> Handle(GetInterviewOrderQuery request,
+    public async Task<Result<InterviewDetailsDto>> Handle(GetInterviewOrderQuery request,
         CancellationToken cancellationToken)
     {
         var interviewOrder = await _dbContext.InterviewOrders
@@ -37,7 +37,7 @@ public class
         if (interviewOrder.CandidateId != request.UserId)
             return Result.Fail(InterviewOrderErrors.InterviewOrderNotOwnedByUser);
 
-        var interviewDetails = new UpcomingInterviewDetailsDto(
+        var interviewDetails = new InterviewDetailsDto(
             interviewOrder.Id,
             null,
             _mapper.Map<InterviewQuestionsListDto>(interviewOrder.QuestionsList),

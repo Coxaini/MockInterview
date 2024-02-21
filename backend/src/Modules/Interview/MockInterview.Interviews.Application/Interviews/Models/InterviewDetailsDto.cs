@@ -3,7 +3,7 @@ using MockInterview.Interviews.Application.Questions.Models;
 
 namespace MockInterview.Interviews.Application.Interviews.Models;
 
-public record UpcomingInterviewDetailsDto(
+public record InterviewDetailsDto(
     Guid Id,
     UserDto? Mate,
     InterviewQuestionsListDto UserQuestionsList,

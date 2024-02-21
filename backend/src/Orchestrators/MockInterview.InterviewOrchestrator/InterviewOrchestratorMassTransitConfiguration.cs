@@ -10,5 +10,8 @@ public class InterviewOrchestratorMassTransitConfiguration : IMassTransitConfigu
     {
         configurator.AddSagaStateMachine<InterviewOrderStateMachine, InterviewOrderState>()
             .InMemoryRepository();
+
+        configurator.AddSagaStateMachine<PeerInterviewMatchStateMachine, PeerInterviewMatchState>()
+            .InMemoryRepository();
     }
 }

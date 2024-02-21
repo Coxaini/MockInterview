@@ -12,7 +12,7 @@ using MockInterview.Interviews.Domain.Entities;
 namespace MockInterview.Interviews.Application.Interviews.Queries;
 
 public class
-    GetInterviewDetailsQueryHandler : IRequestHandler<GetInterviewDetailsQuery, Result<UpcomingInterviewDetailsDto>>
+    GetInterviewDetailsQueryHandler : IRequestHandler<GetInterviewDetailsQuery, Result<InterviewDetailsDto>>
 {
     private readonly InterviewsDbContext _dbContext;
     private readonly IMapper _mapper;
@@ -23,7 +23,7 @@ public class
         _mapper = mapper;
     }
 
-    public async Task<Result<UpcomingInterviewDetailsDto>> Handle(GetInterviewDetailsQuery request,
+    public async Task<Result<InterviewDetailsDto>> Handle(GetInterviewDetailsQuery request,
         CancellationToken cancellationToken)
     {
         var interview = await _dbContext.Interviews
@@ -43,7 +43,7 @@ public class
 
         var mate = interview.GetMateOfMember(request.UserId);
 
-        var interviewDetails = new UpcomingInterviewDetailsDto(
+        var interviewDetails = new InterviewDetailsDto(
             interview.Id,
             _mapper.Map<UserDto>(mate.User),
             _mapper.Map<InterviewQuestionsListDto>(interview.GetQuestionsListByUserId(request.UserId)),

@@ -23,7 +23,7 @@ public class InterviewsController : ApiController
     }
 
     [HttpGet("{interviewId:guid}")]
-    public async Task<ActionResult<UpcomingInterviewDetailsDto>> GetInterview(Guid interviewId)
+    public async Task<ActionResult<InterviewDetailsDto>> GetInterview(Guid interviewId)
     {
         var result = await Mediator.Send(new GetInterviewDetailsQuery(UserId, interviewId));
 

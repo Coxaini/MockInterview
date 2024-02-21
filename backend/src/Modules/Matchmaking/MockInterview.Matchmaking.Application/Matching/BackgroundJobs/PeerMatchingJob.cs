@@ -24,21 +24,26 @@ public class PeerMatchingJob : IJob
     {
         var interviewOrders =
             await _interviewOrderRepository.GetInterviewOrdersAtDateTimeAsync(
-                context.FireTimeUtc.UtcDateTime.AddHours(1));
+                context.ScheduledFireTimeUtc!.Value.UtcDateTime.AddHours(1));
 
-        if (interviewOrders.Count < 2)
-            return;
+        var interviewOrdersByProgrammingLanguage = interviewOrders
+            .GroupBy(x => x.ProgrammingLanguage);
 
-        var bestMatches = _matchingService.GetBestMatches(interviewOrders).ToList();
-
-        foreach (var (first, second) in bestMatches)
+        foreach (var ordersGroup in interviewOrdersByProgrammingLanguage)
         {
-            await _eventBus
-                .PublishAsync(new MatchFound(first.Id, second.Id,
-                    first.CandidateId, second.CandidateId,
-                    first.StartDateTime, first.ProgrammingLanguage, first.Technologies.Intersect(second.Technologies)));
+            var interviewOrdersList = ordersGroup.ToList();
 
-            await _interviewOrderRepository.CloseMatchInterviewOrdersAsync(first.Id, second.Id);
+            if (interviewOrdersList.Count < 2)
+                continue;
+
+            var bestMatches = _matchingService.GetBestMatches(interviewOrdersList);
+
+            foreach (var (first, second) in bestMatches)
+                await _eventBus
+                    .PublishAsync(new PeerMatchFound(first.Id, second.Id,
+                        first.CandidateId, second.CandidateId,
+                        first.StartDateTime, first.ProgrammingLanguage,
+                        first.Technologies.Intersect(second.Technologies)));
         }
     }
 }
