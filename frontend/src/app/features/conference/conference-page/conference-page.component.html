@@ -7,13 +7,20 @@
             class="aspect-[4/3] bg-base-100 bg-video w-full max-h-[40vh] self-center"
             playsinline
         ></video>
-        <video
-            #remoteVideo
-            [srcObject]="remoteStream"
-            autoplay
-            class="aspect-[4/3] bg-base-100 bg-video w-full max-h-[40vh] self-center"
-            playsinline
-        ></video>
+        <div class="aspect-[4/3] w-full max-h-[40vh] self-center relative">
+            @if (!(isConnected$ | async)) {
+                <span
+                    class="loading loading-spinner w-16 h-16 absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%]"
+                ></span>
+            }
+            <video
+                #remoteVideo
+                [srcObject]="remoteStream"
+                autoplay
+                class="bg-base-100 bg-video w-full h-full"
+                playsinline
+            ></video>
+        </div>
         <div class="flex justify-between w-full">
             <button class="btn btn-error">End Call</button>
             <button class="btn btn-primary">Change role</button>

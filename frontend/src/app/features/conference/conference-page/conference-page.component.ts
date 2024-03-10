@@ -34,6 +34,8 @@ export class ConferencePageComponent implements OnInit, OnDestroy {
     interview$: Observable<InterviewDetails>;
     conference$: Observable<UserConference>;
 
+    isConnected$ = this.webRtcService.connected$;
+
     isMediaSetupSubject = new BehaviorSubject<boolean>(false);
 
     constructor(

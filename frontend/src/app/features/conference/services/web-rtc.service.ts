@@ -1,5 +1,5 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 
 @Injectable()
 export class WebRtcService implements OnDestroy {
@@ -24,7 +24,8 @@ export class WebRtcService implements OnDestroy {
     private iceCandidateInitiated = new Subject<RTCIceCandidate>();
     public iceCandidateInitiated$ = this.iceCandidateInitiated.asObservable();
 
-    private remoteTracks: MediaStreamTrack[] = [];
+    private connected = new BehaviorSubject<boolean>(false);
+    public connected$ = this.connected.asObservable();
 
     public setupMediaSources(
         localStream: MediaStream,
@@ -40,8 +41,9 @@ export class WebRtcService implements OnDestroy {
             console.log('Remote stream received');
             event.streams[0].getTracks().forEach((track) => {
                 remoteStream.addTrack(track);
-                this.remoteTracks.push(track);
             });
+
+            this.connected.next(true);
         };
 
         console.log('Media sources set up');
@@ -75,6 +77,8 @@ export class WebRtcService implements OnDestroy {
 
     public close() {
         this.peerConnection.close();
+
+        this.connected.next(false);
     }
 
     public async createAnswer() {
