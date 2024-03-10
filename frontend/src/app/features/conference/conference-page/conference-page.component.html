@@ -1,0 +1,32 @@
+<div class="grid grid-cols-[1fr_2fr] gap-2 h-screen">
+    <div class="grid grid-rows-[1fr_1fr_auto] justify-center">
+        <video
+            #localVideo
+            [srcObject]="localStream$ | async"
+            autoplay
+            class="aspect-[4/3] bg-base-100 bg-video w-full max-h-[40vh] self-center"
+            playsinline
+        ></video>
+        <video
+            #remoteVideo
+            [srcObject]="remoteStream"
+            autoplay
+            class="aspect-[4/3] bg-base-100 bg-video w-full max-h-[40vh] self-center"
+            playsinline
+        ></video>
+        <div class="flex justify-between w-full">
+            <button class="btn btn-error">End Call</button>
+            <button class="btn btn-primary">Change role</button>
+        </div>
+    </div>
+    <div class="p-5 flex flex-col gap-y-3 overflow-x-scroll">
+        <h2 class="text-2xl font-bold">Questions</h2>
+        @if (interview$ | async; as interview) {
+            <app-questions-list
+                [isSelectable]="true"
+                [questionList]="interview.userQuestionsList"
+                [tags]="interview.tags"
+            ></app-questions-list>
+        }
+    </div>
+</div>

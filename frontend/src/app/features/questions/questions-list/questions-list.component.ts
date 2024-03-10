@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { QuestionsList } from '@core/models/questions/questions-list';
 import { QuestionsService } from '../services/questions.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -13,10 +13,13 @@ import { catchError, of } from 'rxjs';
     styleUrl: './questions-list.component.scss',
     providers: [QuestionsListStateService],
 })
-export class QuestionsListComponent {
+export class QuestionsListComponent implements OnInit {
     @Input({ required: true }) questionList: QuestionsList;
     @Input() tags: string[];
     @Input() isEditable: boolean = false;
+    @Input() isSelectable: boolean = false;
+
+    currentQuestionIndex: number = 0;
 
     constructor(
         private questionsService: QuestionsService,
@@ -28,6 +31,7 @@ export class QuestionsListComponent {
             }
         });
     }
+    ngOnInit(): void {}
 
     public isQuestionFormOpened = false;
 
@@ -55,6 +59,21 @@ export class QuestionsListComponent {
                 }),
             )
             .subscribe();
+    }
+
+    nextQuestion() {
+        if (
+            this.currentQuestionIndex <
+            this.questionList.questions.length - 1
+        ) {
+            this.currentQuestionIndex++;
+        }
+    }
+
+    previousQuestion() {
+        if (this.currentQuestionIndex > 0) {
+            this.currentQuestionIndex--;
+        }
     }
 
     public openAddQuestionForm() {
@@ -94,6 +113,22 @@ export class QuestionsListComponent {
                 },
                 error: () => {
                     console.log('Failed to update question');
+                },
+            });
+    }
+
+    public submitFeedback(questionId: string, feedback: string) {
+        this.questionsService
+            .submitFeedback(this.questionList.id, questionId, feedback)
+            .subscribe({
+                next: (question) => {
+                    const index = this.questionList.questions.findIndex(
+                        (q) => q.id === questionId,
+                    );
+                    this.questionList.questions[index] = question;
+                },
+                error: () => {
+                    console.log('Failed to submit feedback');
                 },
             });
     }

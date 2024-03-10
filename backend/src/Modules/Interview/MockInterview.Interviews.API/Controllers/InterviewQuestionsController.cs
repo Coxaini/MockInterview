@@ -61,6 +61,15 @@ public class InterviewQuestionsController : ApiController
         return MatchResult(result, Ok);
     }
 
+    [HttpPost("{questionsListId:guid}/questions/{questionId:guid}/feedback")]
+    public async Task<ActionResult> SubmitFeedback(Guid questionsListId, Guid questionId, SubmitFeedbackRequest request)
+    {
+        var result =
+            await Mediator.Send(new SubmitFeedbackCommand(UserId, questionsListId, questionId, request.Feedback));
+
+        return MatchResult(result, Ok);
+    }
+
     [HttpPost("{questionsListId:guid}/questions/{questionId:guid}/move")]
     public async Task<ActionResult> MoveQuestion(Guid questionsListId, Guid questionId, MoveQuestionRequest request)
     {

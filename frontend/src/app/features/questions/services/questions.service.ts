@@ -26,6 +26,17 @@ export class QuestionsService {
         );
     }
 
+    public submitFeedback(
+        questionListId: string,
+        questionId: string,
+        feedback: string,
+    ) {
+        return this.httpClient.post<Question>(
+            `${this.prefix}/${questionListId}/questions/${questionId}/feedback`,
+            { feedback },
+        );
+    }
+
     public updateQuestion(questionListId: string, question: UpdateQuestion) {
         return this.httpClient.put<Question>(
             `${this.prefix}/${questionListId}/questions/${question.id}`,

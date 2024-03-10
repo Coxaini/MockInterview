@@ -62,4 +62,8 @@ export class UpcomingInterviewRowComponent implements OnInit {
             this.router.navigate(['/orders', this.interview.id]);
         }
     }
+
+    navigateToConference() {
+        this.router.navigate(['/conference', this.interview.id]);
+    }
 }

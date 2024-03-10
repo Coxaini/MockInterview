@@ -1,6 +1,6 @@
 ﻿namespace MatchingGraph.Core;
 
-public struct Node : IEquatable<Node>
+public readonly struct Node : IEquatable<Node>
 {
     public Node(int id)
     {

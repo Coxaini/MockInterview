@@ -8,6 +8,8 @@ import { QuestionsService } from './services/questions.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgIconsModule } from '@ng-icons/core';
 import {
+    heroBackward,
+    heroForward,
     heroPencil,
     heroPlusSmall,
     heroTrash,
@@ -26,7 +28,13 @@ import { TextareaAutosizeDirective } from '@shared/directives/textarea-autosize.
         CommonModule,
         QuestionsRoutingModule,
         ReactiveFormsModule,
-        NgIconsModule.withIcons({ heroTrash, heroPencil, heroPlusSmall }),
+        NgIconsModule.withIcons({
+            heroTrash,
+            heroPencil,
+            heroPlusSmall,
+            heroForward,
+            heroBackward,
+        }),
         DragDropModule,
         TextareaAutosizeDirective,
     ],

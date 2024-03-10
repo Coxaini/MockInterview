@@ -60,17 +60,35 @@
 <td>
     <div class="flex gap-1 flex-wrap">
         <button
-            class="btn btn-sm btn-outline btn-error"
-            (click)="cancelInterview()"
+            class="btn btn-sm btn-outline btn-success"
+            (click)="navigateToConference()"
         >
-            Cancel
+            Join
         </button>
-        <button class="btn btn-sm btn-outline btn-primary">Reschedule</button>
         <button
             class="btn btn-sm btn-outline btn-warning"
             (click)="navigateToDetails()"
         >
             Details
         </button>
+        <div class="dropdown dropdown-right">
+            <div tabindex="0" role="button" class="btn btn-sm btn-outline">
+                <ng-icon size="1.5rem" name="heroEllipsisVertical"></ng-icon>
+            </div>
+            <ul
+                tabindex="0"
+                class="dropdown-content ml-0.5 z-[1] menu p-2 shadow bg-base-200 outline outline-1 outline-white rounded-box gap-2"
+            >
+                <button
+                    class="btn btn-sm btn-outline btn-error"
+                    (click)="cancelInterview()"
+                >
+                    Cancel
+                </button>
+                <button class="btn btn-sm btn-outline btn-primary">
+                    Reschedule
+                </button>
+            </ul>
+        </div>
     </div>
 </td>

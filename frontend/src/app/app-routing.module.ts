@@ -19,6 +19,13 @@ const routes: Routes = [
                 (m) => m.FillProfileModule,
             ),
     },
+    {
+        path: 'conference',
+        loadChildren: () =>
+            import('./features/conference/conference.module').then(
+                (m) => m.ConferenceModule,
+            ),
+    },
 ];
 
 @NgModule({

@@ -1,30 +1,72 @@
 @if (!isEdit) {
-    <div
-        class="flex items-center w-full rounded-box bg-base-300 p-4"
-        (mouseenter)="onMouseEnter()"
-        (mouseleave)="onMouseLeave()"
-    >
-        <div class="flex flex-col flex-1 gap-y-4">
-            <span class="text-lg break-all">{{ question.text }} </span>
-            @if (question.tag) {
-                <span class="badge badge-secondary font-bold">
-                    {{ question.tag }}
-                </span>
-            }
+    @if (isCurrent) {
+        <div class="badge badge-primary absolute top-[-10px] z-20 font-bold">
+            current question
         </div>
-        @if (isEditable) {
-            <div
-                class="px-2 flex gap-1 question-action-menu"
-                [class.invisible]="!isHovered"
-            >
-                <button class="btn btn-primary btn-sm" (click)="edit()">
-                    <ng-icon name="heroPencil" size="1rem"></ng-icon>
-                </button>
-                <button class="btn btn-error btn-sm" (click)="delete()">
-                    <ng-icon name="heroTrash" size="1rem"></ng-icon>
-                </button>
+    }
+    <div
+        [ngClass]="{
+            'current-question-background': isCurrent
+        }"
+        class="p-0.5 w-full rounded-box bg-base-300"
+    >
+        <div
+            class="flex flex-col gap-y-3 justify-center p-3 rounded-box bg-base-300"
+            (mouseenter)="onMouseEnter()"
+            (mouseleave)="onMouseLeave()"
+        >
+            <div class="flex flex-row items-center">
+                <div class="flex flex-col flex-1 gap-y-2">
+                    <span class="text-lg break-all">{{ question.text }} </span>
+                    @if (question.tag) {
+                        <span class="badge badge-secondary font-bold">
+                            {{ question.tag }}
+                        </span>
+                    }
+                </div>
+                @if (isEditable) {
+                    <div
+                        class="px-2 flex gap-1 question-action-menu"
+                        [class.invisible]="!isHovered"
+                    >
+                        <button class="btn btn-primary btn-sm" (click)="edit()">
+                            <ng-icon name="heroPencil" size="1rem"></ng-icon>
+                        </button>
+                        <button class="btn btn-error btn-sm" (click)="delete()">
+                            <ng-icon name="heroTrash" size="1rem"></ng-icon>
+                        </button>
+                    </div>
+                }
             </div>
-        }
+
+            <div class="flex w-full items-center justify-end gap-5">
+                @if (isFeedbackAvailable) {
+                    <input
+                        #textInput
+                        type="text"
+                        [formControl]="feedbackInput"
+                        placeholder="Enter short feedback"
+                        class="input input-bordered input-sm w-full"
+                    />
+                }
+                @if (isCurrent) {
+                    <button
+                        class="btn btn-primary btn-outline btn-sm"
+                        (click)="previous()"
+                    >
+                        <ng-icon name="heroBackward" size="1.5rem"></ng-icon>
+                        Previous
+                    </button>
+                    <button
+                        class="btn btn-primary btn-outline btn-sm"
+                        (click)="next()"
+                    >
+                        <ng-icon name="heroForward" size="1.5rem"></ng-icon>
+                        Next
+                    </button>
+                }
+            </div>
+        </div>
     </div>
 } @else {
     <app-question-editor

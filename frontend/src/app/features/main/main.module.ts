@@ -7,7 +7,11 @@ import { LayoutModule } from '@core/components/layout/layout.module';
 import { PlanInterviewModule } from '@features/plan-interview/plan-interview.module';
 import { UpcomingInterviewRowComponent } from '@features/main/upcoming-interviews/upcoming-interview-row/upcoming-interview-row.component';
 import { NgIconsModule } from '@ng-icons/core';
-import { heroCalendarDays, heroUserCircle } from '@ng-icons/heroicons/outline';
+import {
+    heroCalendarDays,
+    heroEllipsisVertical,
+    heroUserCircle,
+} from '@ng-icons/heroicons/outline';
 import { UpcomingInterviewsTableComponent } from '@features/main/upcoming-interviews/upcoming-interviews-table/upcoming-interviews-table.component';
 
 @NgModule({
@@ -21,7 +25,11 @@ import { UpcomingInterviewsTableComponent } from '@features/main/upcoming-interv
         MainRoutingModule,
         LayoutModule,
         PlanInterviewModule,
-        NgIconsModule.withIcons({ heroCalendarDays, heroUserCircle }),
+        NgIconsModule.withIcons({
+            heroCalendarDays,
+            heroUserCircle,
+            heroEllipsisVertical,
+        }),
     ],
 })
 export class MainModule {}

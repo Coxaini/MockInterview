@@ -6,6 +6,7 @@ using Shared.Core.API.Controllers;
 
 namespace MockInterview.Interviews.API.Controllers;
 
+[ApiController]
 [Route("interview-orders")]
 public class InterviewOrdersController : ApiController
 {

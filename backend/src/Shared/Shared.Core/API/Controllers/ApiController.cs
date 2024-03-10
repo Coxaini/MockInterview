@@ -12,11 +12,11 @@ namespace Shared.Core.API.Controllers;
 
 [ApiController]
 [Authorize]
-public class ApiController : ControllerBase
+public abstract class ApiController : ControllerBase
 {
     protected IMediator Mediator { get; }
 
-    public ApiController(IMediator mediator)
+    protected ApiController(IMediator mediator)
     {
         Mediator = mediator;
     }
@@ -38,6 +38,20 @@ public class ApiController : ControllerBase
         return result.IsSuccess ? onSuccess(result.Value) : Problem(result.Errors);
     }
 
+    protected ValueTask<ActionResult> MatchResultAsync<T>(Result<T> result, Func<T, Task<ActionResult>> onSuccess)
+    {
+        return result.IsSuccess
+            ? new ValueTask<ActionResult>(onSuccess(result.Value))
+            : new ValueTask<ActionResult>(Problem(result.Errors));
+    }
+
+    protected ValueTask<ActionResult> MatchResultAsync(Result result, Func<Task<ActionResult>> onSuccess)
+    {
+        return result.IsSuccess
+            ? new ValueTask<ActionResult>(onSuccess())
+            : new ValueTask<ActionResult>(Problem(result.Errors));
+    }
+
     protected ActionResult MatchResult(Result result, Func<ActionResult> onSuccess)
     {
         return result.IsSuccess ? onSuccess() : Problem(result.Errors);
@@ -45,15 +59,9 @@ public class ApiController : ControllerBase
 
     private ActionResult Problem(List<IError> errors)
     {
-        if (errors.Count is 0)
-        {
-            return Problem();
-        }
+        if (errors.Count is 0) return Problem();
 
-        if (errors.All(error => error is ValidationError))
-        {
-            return ValidationProblem(errors);
-        }
+        if (errors.All(error => error is ValidationError)) return ValidationProblem(errors);
 
         return Problem(errors[0]);
     }
@@ -78,11 +86,9 @@ public class ApiController : ControllerBase
         var modelStateDictionary = new ModelStateDictionary();
 
         foreach (var error in errors)
-        {
             modelStateDictionary.AddModelError(
                 error.Metadata["Code"].ToString() ?? "Validation",
                 error.Message);
-        }
 
         return ValidationProblem(modelStateDictionary);
     }
