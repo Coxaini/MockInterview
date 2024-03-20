@@ -23,4 +23,8 @@
         <ProjectReference Include="..\MockInterview.Interviews.Domain\MockInterview.Interviews.Domain.csproj"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Conferences\Abstractions\" />
+    </ItemGroup>
+
 </Project>

@@ -3,6 +3,7 @@ import {
     Component,
     computed,
     EventEmitter,
+    forwardRef,
     Input,
     Output,
     signal,
@@ -28,7 +29,7 @@ import {
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
-            useExisting: CalendarComponent,
+            useExisting: forwardRef(() => CalendarComponent),
             multi: true,
         },
         provideIcons({ heroChevronDoubleLeft, heroChevronDoubleRight }),

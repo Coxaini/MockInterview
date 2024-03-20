@@ -1,9 +1,11 @@
 ﻿using FluentResults;
+using MapsterMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using MockInterview.Interviews.Application.Common.Errors;
 using MockInterview.Interviews.Application.Common.Exceptions;
 using MockInterview.Interviews.Application.Conferences.Models;
+using MockInterview.Interviews.Application.Questions.Models;
 using MockInterview.Interviews.DataAccess;
 using MockInterview.Interviews.Domain.Entities;
 using MockInterview.Interviews.Domain.Enumerations;
@@ -18,10 +20,13 @@ public class JoinConferenceCommandHandler : IRequestHandler<JoinConferenceComman
 {
     private readonly InterviewsDbContext _dbContext;
     private readonly IRedisCollection<ConferenceSession> _conferenceSessionCollection;
+    private readonly IMapper _mapper;
 
-    public JoinConferenceCommandHandler(InterviewsDbContext dbContext, IRedisConnectionProvider connectionProvider)
+    public JoinConferenceCommandHandler(InterviewsDbContext dbContext, IRedisConnectionProvider connectionProvider,
+        IMapper mapper)
     {
         _dbContext = dbContext;
+        _mapper = mapper;
         _conferenceSessionCollection = connectionProvider.RedisCollection<ConferenceSession>();
     }
 
@@ -36,6 +41,8 @@ public class JoinConferenceCommandHandler : IRequestHandler<JoinConferenceComman
             var interview = await _dbContext.Interviews
                 .AsNoTracking()
                 .Include(i => i.Members.OrderBy(m => m.UserId))
+                .Include(i => i.QuestionsLists)
+                .ThenInclude(l => l.Questions.OrderBy(q => q.OrderIndex).Take(1))
                 .FirstOrDefaultAsync(i => i.Id == request.InterviewId, cancellationToken);
 
             if (interview is null)
@@ -46,17 +53,20 @@ public class JoinConferenceCommandHandler : IRequestHandler<JoinConferenceComman
             if (member is null)
                 return Result.Fail(InterviewErrors.InterviewIsNotBelongToUser);
 
-            var result = await CreateSessionFromInterview(interview, request.UserId);
+            var result = await InsertSessionFromInterview(interview, request.UserId);
 
             if (result.IsFailed) return Result.Fail(result.Errors);
 
             session = result.Value;
 
             var peer = session.Members.First(m => m.Id != request.UserId);
+            var user = session.Members.First(m => m.Id == request.UserId);
 
             return new UserConferenceDto(
                 request.InterviewId,
                 ShouldUserSendOffer(session, request.UserId),
+                user.Role,
+                GetFirstInterviewerQuestion(session),
                 peer.Id,
                 false);
         }
@@ -76,9 +86,19 @@ public class JoinConferenceCommandHandler : IRequestHandler<JoinConferenceComman
             return new UserConferenceDto(
                 request.InterviewId,
                 ShouldUserSendOffer(session, request.UserId),
+                user.Role,
+                GetFirstInterviewerQuestion(session),
                 peer.Id,
                 peer.IsConnected);
         }
+    }
+
+    private ConferenceQuestionDto? GetFirstInterviewerQuestion(ConferenceSession session)
+    {
+        var interviewer = session.Members.First(m => m.Role == ConferenceMemberRole.Interviewer);
+        return interviewer.CurrentQuestion is not null
+            ? _mapper.Map<ConferenceQuestionDto>(interviewer.CurrentQuestion)
+            : null;
     }
 
     private bool ShouldUserSendOffer(ConferenceSession session, Guid userId)
@@ -86,7 +106,7 @@ public class JoinConferenceCommandHandler : IRequestHandler<JoinConferenceComman
         return session.Members[0].Id == userId;
     }
 
-    private async Task<Result<ConferenceSession>> CreateSessionFromInterview(Interview interview, Guid userId)
+    private async Task<Result<ConferenceSession>> InsertSessionFromInterview(Interview interview, Guid userId)
     {
         var newSession = MapInterviewToSession(interview, userId);
 
@@ -101,15 +121,22 @@ public class JoinConferenceCommandHandler : IRequestHandler<JoinConferenceComman
     private ConferenceSession MapInterviewToSession(Interview interview, Guid userId)
     {
         var random = new Random();
-        int interviewerIndex = random.Next(interview.Members.Count);
+        var interviewerId = interview.Members[random.Next(interview.Members.Count)].UserId;
 
-        var members = interview.Members.Select((m, i) => new ConferenceUser
+        var members = interview.Members.Select(m =>
         {
-            Id = m.UserId,
-            IsConnected = m.UserId == userId,
-            Role = i == interviewerIndex
-                ? ConferenceMemberRole.Interviewer
-                : ConferenceMemberRole.Interviewee
+            var firstInterviewerQuestion = interview.GetQuestionsListByUserId(m.UserId).Questions.FirstOrDefault();
+            return new ConferenceUser
+            {
+                Id = m.UserId,
+                IsConnected = m.UserId == userId,
+                CurrentQuestion = firstInterviewerQuestion is not null
+                    ? _mapper.Map<ConferenceQuestion>(firstInterviewerQuestion)
+                    : null,
+                Role = m.UserId == interviewerId
+                    ? ConferenceMemberRole.Interviewer
+                    : ConferenceMemberRole.Interviewee
+            };
         });
 
         return new ConferenceSession

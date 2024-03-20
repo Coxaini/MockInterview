@@ -4,5 +4,6 @@ public enum InterviewStatus
 {
     NotStarted,
     InProgress,
-    Finished
+    Finished,
+    Canceled
 }

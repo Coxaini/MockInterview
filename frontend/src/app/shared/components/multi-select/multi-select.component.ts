@@ -5,6 +5,7 @@ import {
     Input,
     OnInit,
     ViewChild,
+    forwardRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
@@ -20,7 +21,7 @@ import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
-            useExisting: MultiSelectComponent,
+            useExisting: forwardRef(() => MultiSelectComponent),
             multi: true,
         },
     ],

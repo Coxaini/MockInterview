@@ -1,10 +1,13 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { environment } from '@env/environment';
 import * as signalR from '@microsoft/signalr';
-import { ReplaySubject, Subject, from } from 'rxjs';
+import { ReplaySubject, Subject, from, switchMap } from 'rxjs';
 import { UserConference } from '@features/conference/models/user-conference';
 import { HttpClient } from '@angular/common/http';
 import { UserSessionData } from '../models/user-joined-data';
+import { RoleSwappedResponse } from '../models/role-swapped-response';
+import { ChangeQuestion } from '../models/change-question';
+import { ConferenceQuestion } from './../models/conference-question';
 
 @Injectable()
 export class ConferenceService implements OnDestroy {
@@ -24,17 +27,48 @@ export class ConferenceService implements OnDestroy {
     private iceCandidateReceived = new Subject<RTCIceCandidateInit>();
     iceCandidateReceived$ = this.iceCandidateReceived.asObservable();
 
+    private roleSwapped = new Subject<RoleSwappedResponse>();
+    roleSwapped$ = this.roleSwapped.asObservable();
+
+    private questionChanged = new Subject<ChangeQuestion>();
+    questionChanged$ = this.questionChanged.asObservable();
+
     private userLeft = new Subject<UserSessionData>();
     userLeft$ = this.userLeft.asObservable();
 
-    public joinConference(interviewId: string) {
-        return this.httpClient.post<UserConference>(
-            `conferences/${interviewId}/join`,
-            {},
+    private joinConference(interviewId: string) {
+        // return this.httpClient.post<UserConference>(
+        //     `conferences/${interviewId}/join`,
+        //     {},
+        // );
+
+        return this.hubConnection.invoke<UserConference>(
+            'JoinConference',
+            interviewId,
         );
     }
 
-    public startConnection() {
+    public swapRoles(interviewId: string) {
+        // return this.httpClient.post<RoleSwappedData>(
+        //     `conferences/${interviewId}/swap-roles`,
+        //     {},
+        // );
+
+        return this.hubConnection.invoke<RoleSwappedResponse>(
+            'SwapRoles',
+            interviewId,
+        );
+    }
+
+    public changeQuestion(interviewId: string, questionId: string) {
+        return this.hubConnection.invoke<ChangeQuestion>(
+            'ChangeQuestion',
+            interviewId,
+            questionId,
+        );
+    }
+
+    public startConnection(interviewId: string) {
         this.hubConnection = new signalR.HubConnectionBuilder()
             .withUrl(`${environment.apiUrl}/conference-hub`)
             .build();
@@ -68,41 +102,40 @@ export class ConferenceService implements OnDestroy {
             );
         });
 
+        this.hubConnection.on('RoleSwapped', (swap: RoleSwappedResponse) => {
+            this.roleSwapped.next(swap);
+        });
+
+        this.hubConnection.on(
+            'QuestionChanged',
+            (conferenceId: string, currentQuestion?: ConferenceQuestion) => {
+                this.questionChanged.next({ conferenceId, currentQuestion });
+            },
+        );
+
         this.subscribeToIceCandidate();
 
-        return from(connection);
+        return from(connection).pipe(
+            switchMap(() => this.joinConference(interviewId)),
+        );
     }
 
-    // public subscribeToOffer() {
-    //     this.hubConnection.on('ReceiveOffer', (offer: string) => {
-    //         console.log('Received offer', offer);
-    //         this.offerReceived.next(
-    //             JSON.parse(offer) as RTCSessionDescriptionInit,
-    //         );
-    //     });
-
-    //     return this.offerReceived.asObservable();
-    // }
-
-    public sendOffer(userId: string, offer: RTCSessionDescriptionInit) {
+    public sendOffer(conferenceId: string, offer: RTCSessionDescriptionInit) {
         console.log('Sending offer', offer);
-        this.hubConnection.invoke('SendOffer', userId, JSON.stringify(offer));
+        this.hubConnection.invoke(
+            'SendOffer',
+            conferenceId,
+            JSON.stringify(offer),
+        );
     }
 
-    // public subscribeToAnswer() {
-    //     this.hubConnection.on('ReceiveAnswer', (answer: string) => {
-    //         console.log('Received answer', answer);
-    //         this.answerReceived.next(
-    //             JSON.parse(answer) as RTCSessionDescriptionInit,
-    //         );
-    //     });
-
-    //     return this.answerReceived.asObservable();
-    // }
-
-    public sendAnswer(userId: string, answer: RTCSessionDescriptionInit) {
+    public sendAnswer(conferenceId: string, answer: RTCSessionDescriptionInit) {
         console.log('Sending answer', answer);
-        this.hubConnection.invoke('SendAnswer', userId, JSON.stringify(answer));
+        this.hubConnection.invoke(
+            'SendAnswer',
+            conferenceId,
+            JSON.stringify(answer),
+        );
     }
 
     private subscribeToIceCandidate() {
@@ -114,11 +147,11 @@ export class ConferenceService implements OnDestroy {
         });
     }
 
-    public sendIceCandidate(userId: string, candidate: RTCIceCandidate) {
-        console.log('Sending ice candidate', candidate);
+    public sendIceCandidate(conferenceId: string, candidate: RTCIceCandidate) {
+        //console.log('Sending ice candidate', candidate);
         this.hubConnection.invoke(
             'SendIceCandidate',
-            userId,
+            conferenceId,
             JSON.stringify(candidate.toJSON()),
         );
     }

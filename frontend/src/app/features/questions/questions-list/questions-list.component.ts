@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { QuestionsList } from '@core/models/questions/questions-list';
 import { QuestionsService } from '../services/questions.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -13,13 +13,15 @@ import { catchError, of } from 'rxjs';
     styleUrl: './questions-list.component.scss',
     providers: [QuestionsListStateService],
 })
-export class QuestionsListComponent implements OnInit {
+export class QuestionsListComponent {
     @Input({ required: true }) questionList: QuestionsList;
     @Input() tags: string[];
     @Input() isEditable: boolean = false;
     @Input() isSelectable: boolean = false;
+    @Input() selectedQuestionId: string | null = null;
+    @Output() selectedQuestionIdChange = new EventEmitter<string>();
 
-    currentQuestionIndex: number = 0;
+    // currentQuestionIndex: number = 0;
 
     constructor(
         private questionsService: QuestionsService,
@@ -31,7 +33,6 @@ export class QuestionsListComponent implements OnInit {
             }
         });
     }
-    ngOnInit(): void {}
 
     public isQuestionFormOpened = false;
 
@@ -62,18 +63,42 @@ export class QuestionsListComponent implements OnInit {
     }
 
     nextQuestion() {
-        if (
-            this.currentQuestionIndex <
-            this.questionList.questions.length - 1
-        ) {
-            this.currentQuestionIndex++;
+        // if (
+        //     this.currentQuestionIndex <
+        //     this.questionList.questions.length - 1
+        // ) {
+        //     this.currentQuestionIndex++;
+        // }
+
+        const currentIndex = this.getCurrentQuestionIndex();
+
+        if (currentIndex < this.questionList.questions.length - 1) {
+            this.selectedQuestionId =
+                this.questionList.questions[currentIndex + 1].id;
+
+            this.selectedQuestionIdChange.emit(this.selectedQuestionId);
         }
     }
 
     previousQuestion() {
-        if (this.currentQuestionIndex > 0) {
-            this.currentQuestionIndex--;
+        // if (this.currentQuestionIndex > 0) {
+        //     this.currentQuestionIndex--;
+        // }
+
+        const currentIndex = this.getCurrentQuestionIndex();
+
+        if (currentIndex > 0) {
+            this.selectedQuestionId =
+                this.questionList.questions[currentIndex - 1].id;
+
+            this.selectedQuestionIdChange.emit(this.selectedQuestionId);
         }
+    }
+
+    getCurrentQuestionIndex() {
+        return this.questionList.questions.findIndex(
+            (q) => q.id === this.selectedQuestionId,
+        );
     }
 
     public openAddQuestionForm() {
@@ -139,6 +164,15 @@ export class QuestionsListComponent implements OnInit {
             .subscribe({
                 next: (question) => {
                     this.questionList.questions.push(question);
+                    if (
+                        this.isSelectable &&
+                        this.questionList.questions.length === 1
+                    ) {
+                        this.selectedQuestionId = question.id;
+                        this.selectedQuestionIdChange.emit(
+                            this.selectedQuestionId,
+                        );
+                    }
                 },
                 error: () => {
                     console.log('Failed to add question');

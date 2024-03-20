@@ -12,17 +12,20 @@ import {
     heroForward,
     heroPencil,
     heroPlusSmall,
+    heroTag,
     heroTrash,
 } from '@ng-icons/heroicons/outline';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { QuestionEditorComponent } from './question-editor/question-editor.component';
 import { TextareaAutosizeDirective } from '@shared/directives/textarea-autosize.directive';
+import { QuestionCardComponent } from './question-card/question-card.component';
 
 @NgModule({
     declarations: [
         QuestionsListComponent,
         QuestionComponent,
         QuestionEditorComponent,
+        QuestionCardComponent,
     ],
     imports: [
         CommonModule,
@@ -34,11 +37,12 @@ import { TextareaAutosizeDirective } from '@shared/directives/textarea-autosize.
             heroPlusSmall,
             heroForward,
             heroBackward,
+            heroTag,
         }),
         DragDropModule,
         TextareaAutosizeDirective,
     ],
-    exports: [QuestionsListComponent],
+    exports: [QuestionsListComponent, QuestionCardComponent],
     providers: [QuestionsService],
 })
 export class QuestionsModule {}

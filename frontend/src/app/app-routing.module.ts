@@ -3,11 +3,6 @@ import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
     {
-        path: '',
-        loadChildren: () =>
-            import('./features/main/main.module').then((m) => m.MainModule),
-    },
-    {
         path: 'auth',
         loadChildren: () =>
             import('./features/auth/auth.module').then((m) => m.AuthModule),
@@ -25,6 +20,11 @@ const routes: Routes = [
             import('./features/conference/conference.module').then(
                 (m) => m.ConferenceModule,
             ),
+    },
+    {
+        path: '',
+        loadChildren: () =>
+            import('./features/main/main.module').then((m) => m.MainModule),
     },
 ];
 

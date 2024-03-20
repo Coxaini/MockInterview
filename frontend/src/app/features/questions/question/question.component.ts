@@ -11,12 +11,13 @@ import { debounceTime, filter } from 'rxjs';
     styleUrl: './question.component.scss',
 })
 export class QuestionComponent implements OnInit {
-    @Input() question: Question;
+    @Input({ required: true }) question: Question;
     @Input() tags: string[];
     @Output() deleteQuestion = new EventEmitter<Question>();
     @Output() editQuestion = new EventEmitter<Question>();
     @Output() nextQuestion = new EventEmitter<void>();
     @Output() previousQuestion = new EventEmitter<void>();
+    @Output() clickOnQuestion = new EventEmitter<void>();
     @Output() feedbackSubmit = new EventEmitter<string>();
     @Input() isEdit = false;
     @Input() isEditable = false;
@@ -59,6 +60,10 @@ export class QuestionComponent implements OnInit {
 
     cancel() {
         this.questionsListStateService.exitEditMode();
+    }
+
+    click() {
+        this.clickOnQuestion.emit();
     }
 
     next() {

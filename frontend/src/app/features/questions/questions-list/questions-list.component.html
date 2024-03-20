@@ -21,11 +21,11 @@
                 [question]="question"
                 [isEdit]="question.id === editedQuestionId.id"
                 [isEditable]="isEditable"
-                [isCurrent]="isSelectable && i === currentQuestionIndex"
+                [isCurrent]="isSelectable && question.id === selectedQuestionId"
                 (nextQuestion)="nextQuestion()"
                 (previousQuestion)="previousQuestion()"
                 [isFeedbackAvailable]="
-                    isSelectable && i <= currentQuestionIndex
+                    isSelectable && i <= getCurrentQuestionIndex()
                 "
                 (feedbackSubmit)="submitFeedback(question.id, $event)"
                 [tags]="tags"

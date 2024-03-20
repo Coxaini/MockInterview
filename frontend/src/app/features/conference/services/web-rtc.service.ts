@@ -5,11 +5,12 @@ import { BehaviorSubject, Subject } from 'rxjs';
 export class WebRtcService implements OnDestroy {
     private readonly configuration: RTCConfiguration = {
         iceServers: [
-            { urls: 'stun:stun.l.google.com:19302' },
-            { urls: 'stun:stun1.l.google.com:19302' },
-            { urls: 'stun:stun2.l.google.com:19302' },
-            { urls: 'stun:stun3.l.google.com:19302' },
-            { urls: 'stun:stun4.l.google.com:19302' },
+            {
+                urls: [
+                    'stun:stun1.l.google.com:19302',
+                    'stun:stun2.l.google.com:19302',
+                ],
+            },
         ],
         iceCandidatePoolSize: 10,
     };
@@ -40,6 +41,7 @@ export class WebRtcService implements OnDestroy {
         this.peerConnection.ontrack = (event) => {
             console.log('Remote stream received');
             event.streams[0].getTracks().forEach((track) => {
+                //console.log(track);
                 remoteStream.addTrack(track);
             });
 
@@ -49,7 +51,7 @@ export class WebRtcService implements OnDestroy {
         console.log('Media sources set up');
 
         this.peerConnection.onicecandidate = (event) => {
-            console.log('Ice candidate initiated');
+            //console.log('Ice candidate initiated');
             event.candidate && this.iceCandidateInitiated.next(event.candidate);
         };
     }

@@ -16,10 +16,14 @@ import {
     mergeMap,
     BehaviorSubject,
     startWith,
+    Subject,
 } from 'rxjs';
 import { ConferenceService } from '../services/conference.service';
 import { WebRtcService } from '../services/web-rtc.service';
 import { UserConference } from '../models/user-conference';
+import { ConferenceMemberRole } from '../models/conference-member-role';
+import { UserRole } from '../models/user-role';
+import { ConferenceQuestion } from '../models/conference-question';
 
 @Component({
     selector: 'app-conference-page',
@@ -35,6 +39,12 @@ export class ConferencePageComponent implements OnInit, OnDestroy {
     conference$: Observable<UserConference>;
 
     isConnected$ = this.webRtcService.connected$;
+
+    userRoleSubject = new Subject<UserRole>();
+
+    currentQuestionSubject = new BehaviorSubject<ConferenceQuestion | null>(
+        null,
+    );
 
     isMediaSetupSubject = new BehaviorSubject<boolean>(false);
 
@@ -101,12 +111,10 @@ export class ConferencePageComponent implements OnInit, OnDestroy {
                 );
             }),
             switchMap((interviewId) => {
-                return this.conferenceService
-                    .startConnection()
-                    .pipe(map(() => interviewId));
+                return this.conferenceService.startConnection(interviewId);
             }),
-            switchMap((interviewId) => {
-                return this.conferenceService.joinConference(interviewId);
+            tap((conference) => {
+                console.log('Conference:', conference);
             }),
             switchMap((conference) => {
                 return iif(
@@ -122,6 +130,13 @@ export class ConferencePageComponent implements OnInit, OnDestroy {
             }),
             shareReplay(1),
         );
+
+        this.conference$.subscribe((conference) => {
+            this.userRoleSubject.next({ role: conference.userRole });
+            this.currentQuestionSubject.next(
+                conference.currentQuestion || null,
+            );
+        });
 
         this.localStream$.subscribe((localStream) => {
             this.webRtcService.setupMediaSources(
@@ -143,22 +158,38 @@ export class ConferencePageComponent implements OnInit, OnDestroy {
                 }),
             )
             .subscribe(({ conference, candidate }) => {
-                if (this.remoteStream.active) {
-                    this.conferenceService.sendIceCandidate(
-                        conference.peerId,
-                        candidate,
-                    );
-                }
+                this.conferenceService.sendIceCandidate(
+                    conference.id,
+                    candidate,
+                );
             });
 
         this.conferenceService.iceCandidateReceived$.subscribe((candidate) => {
             this.webRtcService.addIceCandidate(candidate);
         });
 
-        this.joinVideoConference();
+        this.initializeVideoConference();
+        this.initializeConferenceSynchronization();
     }
 
-    private joinVideoConference() {
+    private initializeConferenceSynchronization() {
+        this.conferenceService.roleSwapped$.subscribe((swappedInfo) => {
+            this.userRoleSubject.next({ role: swappedInfo.newRole });
+            console.log('Role swapped', swappedInfo);
+            this.currentQuestionSubject.next(
+                swappedInfo.currentQuestion || null,
+            );
+        });
+
+        this.conferenceService.questionChanged$.subscribe((changeQuestion) => {
+            console.log(changeQuestion);
+            this.currentQuestionSubject.next(
+                changeQuestion.currentQuestion || null,
+            );
+        });
+    }
+
+    private initializeVideoConference() {
         this.conference$
             .pipe(
                 filter((conference) => conference.shouldSendOffer),
@@ -178,14 +209,14 @@ export class ConferencePageComponent implements OnInit, OnDestroy {
                 }),
             )
             .subscribe(({ conference, answer }) => {
-                this.conferenceService.sendAnswer(conference.peerId, answer);
+                this.conferenceService.sendAnswer(conference.id, answer);
             });
     }
 
     private processOffer(conference: UserConference) {
         return from(this.webRtcService.createOffer()).pipe(
             switchMap((offer) => {
-                this.conferenceService.sendOffer(conference.peerId, offer);
+                this.conferenceService.sendOffer(conference.id, offer);
                 return this.conferenceService.answerReceived$;
             }),
         );
@@ -215,5 +246,51 @@ export class ConferencePageComponent implements OnInit, OnDestroy {
                 });
             });
         }
+    }
+
+    public isInterviewer(role: ConferenceMemberRole): boolean {
+        return role === ConferenceMemberRole.Interviewer;
+    }
+
+    public swapRoles() {
+        this.interview$
+            .pipe(
+                switchMap((interview) => {
+                    return this.conferenceService.swapRoles(interview.id);
+                }),
+            )
+            .subscribe({
+                next: (role) => {
+                    this.userRoleSubject.next({ role: role.newRole });
+                    this.currentQuestionSubject.next(
+                        role.currentQuestion || null,
+                    );
+                },
+                error: (err) => {
+                    console.error(err);
+                },
+            });
+    }
+
+    public changeQuestion(questionId: string) {
+        this.interview$
+            .pipe(
+                switchMap((interview) => {
+                    return this.conferenceService.changeQuestion(
+                        interview.id,
+                        questionId,
+                    );
+                }),
+            )
+            .subscribe({
+                next: (question) => {
+                    this.currentQuestionSubject.next(
+                        question.currentQuestion || null,
+                    );
+                },
+                error: (err) => {
+                    console.error(err);
+                },
+            });
     }
 }
