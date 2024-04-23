@@ -1,4 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import {
+    Component,
+    DestroyRef,
+    inject,
+    OnDestroy,
+    OnInit,
+} from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Interview } from '@core/models/interviews/interview';
@@ -6,13 +12,14 @@ import { InterviewService } from '@core/services/interviews/interview.service';
 import { getDuration } from '@core/utils/get-duration';
 import confetti from 'canvas-confetti';
 import { interval, Observable, switchMap, takeUntil, timer } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
     selector: 'app-interview-feedback-page',
     templateUrl: './interview-feedback-page.component.html',
     styleUrl: './interview-feedback-page.component.scss',
 })
-export class InterviewFeedbackPageComponent implements OnInit {
+export class InterviewFeedbackPageComponent implements OnInit, OnDestroy {
     constructor(
         private route: ActivatedRoute,
         private router: Router,
@@ -21,6 +28,8 @@ export class InterviewFeedbackPageComponent implements OnInit {
     ) {}
 
     interview$: Observable<Interview>;
+
+    private destroyRef = inject(DestroyRef);
 
     feedbackForm = this.fb.group({
         feedback: ['', Validators.required],
@@ -59,9 +68,16 @@ export class InterviewFeedbackPageComponent implements OnInit {
 
         const stopConfetti = timer(3500);
 
-        launchConfetti.pipe(takeUntil(stopConfetti)).subscribe((x) => {
-            this.celebrate(x % 2 === 0);
-        });
+        launchConfetti
+            .pipe(takeUntilDestroyed(this.destroyRef), takeUntil(stopConfetti))
+            .subscribe((x) => {
+                this.celebrate(x % 2 === 0);
+            });
+    }
+
+    ngOnDestroy(): void {
+        console.log('Resetting confetti');
+        confetti.reset();
     }
 
     celebrate(isMirrored = false) {
