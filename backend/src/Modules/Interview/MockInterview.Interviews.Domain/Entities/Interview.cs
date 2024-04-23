@@ -13,7 +13,7 @@ public class Interview : BaseEntity
     }
 
     public DateTime StartTime { get; private set; }
-    public DateTime? EndTime { get; }
+    public DateTime? EndTime { get; private set; }
     public string ProgrammingLanguage { get; private set; } = string.Empty;
     public string[] Tags { get; private set; } = Array.Empty<string>();
     public IReadOnlyList<InterviewMember> Members => _members.AsReadOnly();
@@ -30,8 +30,13 @@ public class Interview : BaseEntity
         }
     }
 
-    /*public InterviewMember FirstMember => _members[0];
-    public InterviewMember SecondMember => _members[1];*/
+    public void EndInterview(DateTime endTime)
+    {
+        if (StartTime > endTime)
+            throw new InvalidOperationException("End time cannot be before start time");
+
+        EndTime = endTime;
+    }
 
     public InterviewMember GetMateOfMember(Guid userId)
     {

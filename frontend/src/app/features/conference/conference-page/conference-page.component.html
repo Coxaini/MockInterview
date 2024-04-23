@@ -12,8 +12,8 @@
         }
     </div>
     @if (userRoleSubject | async; as userRole) {
-        <div class="rounded-badge bg-accent p-3">
-            <span class="text-lg font-bold text-accent-content">
+        <div class="rounded-badge bg-warning p-3">
+            <span class="text-lg font-bold text-warning-content">
                 @if (isInterviewer(userRole.role)) {
                     It's your turn to ask questions.
                 } @else {
@@ -27,7 +27,7 @@
         ><span class="loading loading-dots loading-sm ml-1 mt-3"></span>
     }
     <div class="flex justify-end flex-grow">
-        <button class="btn btn-error">
+        <button class="btn btn-error" (click)="endConference()">
             <ng-icon name="heroStop" size="1.25rem"></ng-icon>
             End Call
         </button>

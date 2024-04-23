@@ -1,0 +1,9 @@
+:host{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100svw;
+    height: 100svh;
+    @apply bg-base-200;
+    text-align: center;
+}

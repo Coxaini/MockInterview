@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { InterviewDetails } from '@core/models/interviews/interview-details';
 import { InterviewService } from '@core/services/interviews/interview.service';
 import {
@@ -17,6 +17,7 @@ import {
     BehaviorSubject,
     startWith,
     Subject,
+    forkJoin,
 } from 'rxjs';
 import { ConferenceService } from '../services/conference.service';
 import { WebRtcService } from '../services/web-rtc.service';
@@ -24,6 +25,7 @@ import { UserConference } from '../models/user-conference';
 import { ConferenceMemberRole } from '../models/conference-member-role';
 import { UserRole } from '../models/user-role';
 import { ConferenceQuestion } from '../models/conference-question';
+import { ModalService } from '@core/services/modal/modal.service';
 
 @Component({
     selector: 'app-conference-page',
@@ -53,6 +55,8 @@ export class ConferencePageComponent implements OnInit, OnDestroy {
         private conferenceService: ConferenceService,
         private webRtcService: WebRtcService,
         private route: ActivatedRoute,
+        private router: Router,
+        private modalService: ModalService,
     ) {
         this.localStream$ = from(
             navigator.mediaDevices.getUserMedia({ video: true, audio: false }),
@@ -74,7 +78,7 @@ export class ConferencePageComponent implements OnInit, OnDestroy {
                 console.log('InterviewId:', interviewId);
             }),
             switchMap((interviewId) => {
-                return this.interviewService.getArrangedInterview(interviewId);
+                return this.interviewService.getInterviewDetails(interviewId);
             }),
             shareReplay({ bufferSize: 1, refCount: true }),
         );
@@ -112,9 +116,6 @@ export class ConferencePageComponent implements OnInit, OnDestroy {
             }),
             switchMap((interviewId) => {
                 return this.conferenceService.startConnection(interviewId);
-            }),
-            tap((conference) => {
-                console.log('Conference:', conference);
             }),
             switchMap((conference) => {
                 return iif(
@@ -187,6 +188,12 @@ export class ConferencePageComponent implements OnInit, OnDestroy {
                 changeQuestion.currentQuestion || null,
             );
         });
+
+        this.conferenceService.conferenceEnded$
+            .pipe(switchMap(() => this.interview$))
+            .subscribe((interview) => {
+                this.router.navigate(['/interview-feedback', interview.id]);
+            });
     }
 
     private initializeVideoConference() {
@@ -265,6 +272,43 @@ export class ConferencePageComponent implements OnInit, OnDestroy {
                     this.currentQuestionSubject.next(
                         role.currentQuestion || null,
                     );
+                },
+                error: (err) => {
+                    console.error(err);
+                },
+            });
+    }
+
+    public endConference() {
+        this.modalService
+            .openConfirmationDialog(
+                'End conference',
+                'Are you sure you want to end the conference?',
+            )
+            .closed.pipe(
+                switchMap((result) => {
+                    if (!result) {
+                        return of(null);
+                    }
+                    return this.interview$.pipe(
+                        switchMap((interview) => {
+                            return forkJoin([
+                                of(interview),
+                                this.conferenceService.endConference(
+                                    interview.id,
+                                ),
+                            ]);
+                        }),
+                    );
+                }),
+            )
+            .subscribe({
+                next: (result) => {
+                    if (!result) return;
+
+                    const [interview] = result;
+
+                    this.router.navigate(['/interview-feedback', interview.id]);
                 },
                 error: (err) => {
                     console.error(err);

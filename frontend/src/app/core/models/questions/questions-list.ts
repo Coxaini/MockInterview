@@ -6,4 +6,5 @@ export interface QuestionsList {
     interviewId?: string;
     authorId: string;
     questions: Question[];
+    feedback?: string;
 }

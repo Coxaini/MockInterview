@@ -39,15 +39,27 @@
                 }
             </div>
 
-            <div class="flex w-full items-center justify-end gap-5">
+            <div class="flex flex-col w-full items-center">
                 @if (isFeedbackAvailable) {
-                    <input
-                        #textInput
-                        type="text"
-                        [formControl]="feedbackInput"
-                        placeholder="Enter short feedback"
-                        class="input input-bordered input-sm w-full"
-                    />
+                    @if (isFeedbackEditable) {
+                        <input
+                            #textInput
+                            type="text"
+                            [formControl]="feedbackInput"
+                            placeholder="Enter short feedback"
+                            class="input input-bordered input-sm w-full"
+                        />
+                    } @else if (question.feedback) {
+                        <div class="divider">comment</div>
+                        <div
+                            class="flex w-full justify-between items-center gap-1"
+                        >
+                            <div class="badge badge-lg">
+                                {{ question.feedback }}
+                            </div>
+                            <ng-icon name="heroChatBubbleLeft"></ng-icon>
+                        </div>
+                    }
                 }
                 @if (isCurrent) {
                     <button

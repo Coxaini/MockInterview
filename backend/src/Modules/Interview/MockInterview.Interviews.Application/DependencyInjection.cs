@@ -28,6 +28,7 @@ public static class DependencyInjection
         services.AddResiliencePipelines();
 
         services.AddScoped<IInterviewOrdersService, InterviewOrdersService>();
+        services.AddScoped<IInterviewScheduler, InterviewScheduler>();
 
         return services;
     }

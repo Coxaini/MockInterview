@@ -11,7 +11,7 @@
             </tr>
         </thead>
         <tbody>
-            @for (interview of interviews$ | async; track interview.id) {
+            @for (interview of interviews; track interview.id) {
                 <tr app-upcoming-interview-row [interview]="interview"></tr>
             } @empty {
                 <tr>

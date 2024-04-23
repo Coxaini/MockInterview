@@ -24,6 +24,7 @@ export class QuestionComponent implements OnInit {
 
     @Input() isCurrent = false;
     @Input() isFeedbackAvailable = false;
+    @Input() isFeedbackEditable = false;
 
     isHovered = false;
 

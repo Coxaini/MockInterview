@@ -18,13 +18,9 @@ public class IndexCreationService : IHostedService
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        foreach (var type in _types) await _connectionProvider.Connection.CreateIndexAsync(type);
-
-        /*
         var tasks = _types.Select(type => _connectionProvider.Connection.CreateIndexAsync(type));
 
         await Task.WhenAll(tasks);
-    */
     }
 
     public Task StopAsync(CancellationToken cancellationToken)

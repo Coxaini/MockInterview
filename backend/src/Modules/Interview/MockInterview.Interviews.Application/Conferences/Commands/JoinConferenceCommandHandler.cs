@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using MockInterview.Interviews.Application.Common.Errors;
 using MockInterview.Interviews.Application.Common.Exceptions;
 using MockInterview.Interviews.Application.Conferences.Models;
+using MockInterview.Interviews.Application.Interviews.Services;
 using MockInterview.Interviews.Application.Questions.Models;
 using MockInterview.Interviews.DataAccess;
 using MockInterview.Interviews.Domain.Entities;
@@ -21,12 +22,14 @@ public class JoinConferenceCommandHandler : IRequestHandler<JoinConferenceComman
     private readonly InterviewsDbContext _dbContext;
     private readonly IRedisCollection<ConferenceSession> _conferenceSessionCollection;
     private readonly IMapper _mapper;
+    private readonly IInterviewScheduler _scheduler;
 
     public JoinConferenceCommandHandler(InterviewsDbContext dbContext, IRedisConnectionProvider connectionProvider,
-        IMapper mapper)
+        IMapper mapper, IInterviewScheduler scheduler)
     {
         _dbContext = dbContext;
         _mapper = mapper;
+        _scheduler = scheduler;
         _conferenceSessionCollection = connectionProvider.RedisCollection<ConferenceSession>();
     }
 
@@ -53,11 +56,10 @@ public class JoinConferenceCommandHandler : IRequestHandler<JoinConferenceComman
             if (member is null)
                 return Result.Fail(InterviewErrors.InterviewIsNotBelongToUser);
 
-            var result = await InsertSessionFromInterview(interview, request.UserId);
+            if (interview.Status == InterviewStatus.Finished)
+                return Result.Fail(InterviewErrors.InterviewIsFinished);
 
-            if (result.IsFailed) return Result.Fail(result.Errors);
-
-            session = result.Value;
+            session = await InsertSessionFromInterview(interview, request.UserId);
 
             var peer = session.Members.First(m => m.Id != request.UserId);
             var user = session.Members.First(m => m.Id == request.UserId);
@@ -80,6 +82,8 @@ public class JoinConferenceCommandHandler : IRequestHandler<JoinConferenceComman
             user.IsConnected = true;
 
             await _conferenceSessionCollection.SaveAsync();
+
+            await _scheduler.UnScheduleInterviewTimeOutAsync(request.InterviewId, cancellationToken);
 
             var peer = session.Members.First(m => m.Id != request.UserId);
 
@@ -106,11 +110,11 @@ public class JoinConferenceCommandHandler : IRequestHandler<JoinConferenceComman
         return session.Members[0].Id == userId;
     }
 
-    private async Task<Result<ConferenceSession>> InsertSessionFromInterview(Interview interview, Guid userId)
+    private async Task<ConferenceSession> InsertSessionFromInterview(Interview interview, Guid userId)
     {
         var newSession = MapInterviewToSession(interview, userId);
 
-        string? sessionId = await _conferenceSessionCollection.InsertAsync(newSession, WhenKey.NotExists);
+        var sessionId = await _conferenceSessionCollection.InsertAsync(newSession, WhenKey.NotExists);
 
         if (sessionId is null)
             throw new ConcurrencyException("Session already exists");

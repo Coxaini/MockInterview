@@ -17,7 +17,7 @@ public class InterviewQuestionsList : BaseEntity
     public Guid? InterviewOrderId { get; private set; }
     public InterviewOrder? InterviewOrder { get; }
     public IReadOnlyList<InterviewQuestion> Questions => _questions.AsReadOnly();
-    public string? Feedback { get; }
+    public string? Feedback { get; private set; }
     public bool IsFeedbackSent { get; private set; } = false;
 
     public static InterviewQuestionsList Create(Guid interviewOrderId, Guid authorId)
@@ -39,6 +39,12 @@ public class InterviewQuestionsList : BaseEntity
     {
         InterviewId = interview.Id;
         Interview = interview;
+    }
+
+    public void SetFeedback(string feedback)
+    {
+        Feedback = feedback;
+        IsFeedbackSent = true;
     }
 
     public static InterviewQuestionsList Create(Interview interview, Guid authorId, Guid? interviewOrderId)

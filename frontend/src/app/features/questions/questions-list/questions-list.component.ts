@@ -1,4 +1,10 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+    booleanAttribute,
+    Component,
+    EventEmitter,
+    Input,
+    Output,
+} from '@angular/core';
 import { QuestionsList } from '@core/models/questions/questions-list';
 import { QuestionsService } from '../services/questions.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -19,6 +25,8 @@ export class QuestionsListComponent {
     @Input() isEditable: boolean = false;
     @Input() isSelectable: boolean = false;
     @Input() selectedQuestionId: string | null = null;
+    @Input({ transform: booleanAttribute }) isFeedbackEnabled: boolean = false;
+    @Input({ transform: booleanAttribute }) isFeedbackEditable: boolean = true;
     @Output() selectedQuestionIdChange = new EventEmitter<string>();
 
     // currentQuestionIndex: number = 0;
@@ -115,6 +123,25 @@ export class QuestionsListComponent {
             .deleteQuestion(this.questionList.id, questionId)
             .subscribe({
                 next: () => {
+                    if (this.selectedQuestionId === questionId) {
+                        const index = this.questionList.questions.findIndex(
+                            (q) => q.id === questionId,
+                        );
+
+                        if (this.questionList.questions.length === 1) {
+                            this.selectedQuestionId = null;
+                        } else if (index === 0) {
+                            this.selectedQuestionId =
+                                this.questionList.questions[1]?.id;
+                        } else {
+                            this.selectedQuestionId =
+                                this.questionList.questions[index - 1]?.id;
+                        }
+
+                        this.selectedQuestionIdChange.emit(
+                            this.selectedQuestionId || '',
+                        );
+                    }
                     this.questionList.questions =
                         this.questionList.questions.filter(
                             (q) => q.id !== questionId,
@@ -135,6 +162,13 @@ export class QuestionsListComponent {
                         (q) => q.id === result.id,
                     );
                     this.questionList.questions[index] = result;
+
+                    if (
+                        this.isSelectable &&
+                        this.selectedQuestionId === result.id
+                    ) {
+                        this.selectedQuestionIdChange.emit(result.id);
+                    }
                 },
                 error: () => {
                     console.log('Failed to update question');

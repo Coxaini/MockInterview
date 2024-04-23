@@ -37,14 +37,44 @@
         <span>{{
             interviewDetails.startDateTime | date: "MMM d, y, h:mm a"
         }}</span>
-        <span class="col-span-2 font-bold">Tags</span>
-        <ng-icon name="heroTag"></ng-icon>
-        <div class="flex flex-wrap gap-1">
-            @for (tag of interviewDetails.tags; track tag) {
-                <span class="badge badge-secondary font-bold">
-                    {{ tag }}
-                </span>
-            }
-        </div>
+        @if (interviewDetails.endDateTime) {
+            <span class="col-span-2 font-bold">Duration</span>
+            <ng-icon name="heroClock"></ng-icon>
+            <span>{{
+                getInterviewDuration(
+                    interviewDetails.startDateTime,
+                    interviewDetails.endDateTime
+                )
+            }}</span>
+        }
+        @if (interviewDetails.tags.length > 0) {
+            <span class="col-span-2 font-bold">Tags</span>
+            <ng-icon name="heroTag"></ng-icon>
+            <div class="flex flex-wrap gap-1">
+                @for (tag of interviewDetails.tags; track tag) {
+                    <span class="badge badge-secondary font-bold">
+                        {{ tag }}
+                    </span>
+                }
+            </div>
+        }
+        @if (interviewDetails.mateQuestionsList?.feedback) {
+            <span class="col-span-2 font-bold">Mate's Feedback</span>
+            <ng-icon name="heroChatBubbleLeft"></ng-icon>
+            <span>{{ interviewDetails.mateQuestionsList?.feedback }}</span>
+        }
+
+        <span class="col-span-2 font-bold">Your Feedback</span>
+        <ng-icon name="heroChatBubbleBottomCenter"></ng-icon>
+        @if (interviewDetails.userQuestionsList.feedback) {
+            <span>{{ interviewDetails.userQuestionsList.feedback }}</span>
+        } @else {
+            <a
+                class="btn btn-primary"
+                routerLink="/interview-feedback/{{ interviewDetails.id }}"
+            >
+                Add Feedback
+            </a>
+        }
     </div>
 </div>

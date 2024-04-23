@@ -6,6 +6,9 @@ import { InterviewPageComponent } from '@features/interview/interview-page/inter
 import { NgIconsModule, provideNgIconsConfig } from '@ng-icons/core';
 import {
     heroCalendarDays,
+    heroChatBubbleBottomCenter,
+    heroChatBubbleLeft,
+    heroClock,
     heroInformationCircle,
     heroTag,
     heroUserCircle,
@@ -29,6 +32,9 @@ import { InterviewOrderPageComponent } from './interview-order-page/interview-or
             heroUserCircle,
             heroInformationCircle,
             heroTag,
+            heroClock,
+            heroChatBubbleLeft,
+            heroChatBubbleBottomCenter,
         }),
     ],
     providers: [

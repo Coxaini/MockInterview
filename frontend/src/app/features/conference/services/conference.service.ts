@@ -36,12 +36,10 @@ export class ConferenceService implements OnDestroy {
     private userLeft = new Subject<UserSessionData>();
     userLeft$ = this.userLeft.asObservable();
 
-    private joinConference(interviewId: string) {
-        // return this.httpClient.post<UserConference>(
-        //     `conferences/${interviewId}/join`,
-        //     {},
-        // );
+    private conferenceEnded = new Subject<void>();
+    conferenceEnded$ = this.conferenceEnded.asObservable();
 
+    private joinConference(interviewId: string) {
         return this.hubConnection.invoke<UserConference>(
             'JoinConference',
             interviewId,
@@ -49,15 +47,14 @@ export class ConferenceService implements OnDestroy {
     }
 
     public swapRoles(interviewId: string) {
-        // return this.httpClient.post<RoleSwappedData>(
-        //     `conferences/${interviewId}/swap-roles`,
-        //     {},
-        // );
-
         return this.hubConnection.invoke<RoleSwappedResponse>(
             'SwapRoles',
             interviewId,
         );
+    }
+
+    public endConference(interviewId: string) {
+        return this.hubConnection.invoke('EndConference', interviewId);
     }
 
     public changeQuestion(interviewId: string, questionId: string) {
@@ -112,6 +109,10 @@ export class ConferenceService implements OnDestroy {
                 this.questionChanged.next({ conferenceId, currentQuestion });
             },
         );
+
+        this.hubConnection.on('ConferenceEnded', () => {
+            this.conferenceEnded.next();
+        });
 
         this.subscribeToIceCandidate();
 

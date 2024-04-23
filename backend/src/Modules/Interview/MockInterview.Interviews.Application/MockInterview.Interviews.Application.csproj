@@ -11,6 +11,7 @@
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0"/>
         <PackageReference Include="Polly" Version="8.3.1"/>
         <PackageReference Include="Polly.Extensions" Version="8.3.1"/>
+        <PackageReference Include="Quartz" Version="3.8.0"/>
         <PackageReference Include="Redis.OM" Version="0.6.0"/>
     </ItemGroup>
 
@@ -24,7 +25,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Conferences\Abstractions\" />
+        <Folder Include="Conferences\Abstractions\"/>
+        <Folder Include="InterviewOrders\Models\"/>
     </ItemGroup>
 
 </Project>

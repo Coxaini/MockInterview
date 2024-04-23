@@ -31,7 +31,7 @@ export class InterviewPageComponent implements OnInit {
                 const interviewId = params.get('interviewId');
                 if (!interviewId) throw new Error('No interviewId');
 
-                return this.interviewService.getArrangedInterview(interviewId);
+                return this.interviewService.getInterviewDetails(interviewId);
             }),
             shareReplay({ bufferSize: 1, refCount: true }),
         );

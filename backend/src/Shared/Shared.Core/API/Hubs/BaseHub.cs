@@ -24,4 +24,11 @@ public class BaseHub<T> : Hub<T> where T : class
             ? new ValueTask<TR>(onSuccess(result.Value))
             : throw new HubException(result.Errors[0].Message);
     }
+
+    protected ValueTask MatchResultAsync(Result result, Func<Task> onSuccess)
+    {
+        return result.IsSuccess
+            ? new ValueTask(onSuccess())
+            : throw new HubException(result.Errors[0].Message);
+    }
 }

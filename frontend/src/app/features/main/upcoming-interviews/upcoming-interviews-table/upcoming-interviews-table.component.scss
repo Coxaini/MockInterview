@@ -16,7 +16,7 @@
             flex-direction: column;
         }
         tr{
-            @apply bg-base-200 mb-3;
+            @apply shadow-md mb-3;
         }
         td {
             display: block;

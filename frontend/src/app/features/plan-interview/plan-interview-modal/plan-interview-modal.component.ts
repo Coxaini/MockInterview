@@ -6,7 +6,7 @@ import { InterviewPlanService } from '@features/plan-interview/services/intervie
 import { InterviewPlan } from '@features/plan-interview/models/interview-plan';
 import { Router } from '@angular/router';
 import { filter } from 'rxjs';
-import { InterviewScheduleService } from '@core/services/interviews/interview-schedule.service';
+import { InterviewDashboardService } from '@core/services/interviews/interview-dashboard.service';
 
 @Component({
     selector: 'app-plan-interview-modal',
@@ -21,7 +21,7 @@ export class PlanInterviewModalComponent implements OnInit {
         private fb: FormBuilder,
         private interviewPlanService: InterviewPlanService,
         private router: Router,
-        private interviewService: InterviewScheduleService,
+        private interviewService: InterviewDashboardService,
     ) {}
 
     ngOnInit(): void {

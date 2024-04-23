@@ -59,12 +59,14 @@
 <td></td>
 <td>
     <div class="flex gap-1 flex-wrap">
-        <button
-            class="btn btn-sm btn-outline btn-success"
-            (click)="navigateToConference()"
-        >
-            Join
-        </button>
+        @if (interview.mate) {
+            <button
+                class="btn btn-sm btn-outline btn-success"
+                (click)="navigateToConference()"
+            >
+                Join
+            </button>
+        }
         <button
             class="btn btn-sm btn-outline btn-warning"
             (click)="navigateToDetails()"

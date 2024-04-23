@@ -23,7 +23,7 @@ export class InterviewOrderPageComponent implements OnInit {
                 const orderId = params.get('orderId');
                 if (!orderId) throw new Error('No orderId');
 
-                return this.interviewService.getRequestedInterview(orderId);
+                return this.interviewService.getRequestedInterviewDetails(orderId);
             }),
             shareReplay({ bufferSize: 1, refCount: true }),
         );

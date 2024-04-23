@@ -9,6 +9,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { NgIconsModule } from '@ng-icons/core';
 import {
     heroBackward,
+    heroChatBubbleLeft,
     heroForward,
     heroPencil,
     heroPlusSmall,
@@ -38,6 +39,7 @@ import { QuestionCardComponent } from './question-card/question-card.component';
             heroForward,
             heroBackward,
             heroTag,
+            heroChatBubbleLeft,
         }),
         DragDropModule,
         TextareaAutosizeDirective,

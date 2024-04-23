@@ -13,12 +13,17 @@ import {
     heroUserCircle,
 } from '@ng-icons/heroicons/outline';
 import { UpcomingInterviewsTableComponent } from '@features/main/upcoming-interviews/upcoming-interviews-table/upcoming-interviews-table.component';
+import { InterviewCardComponent } from './interviews/interview-card/interview-card.component';
+import { RecentInterviewsListComponent } from './interviews/recent-interviews-list/recent-interviews-list.component';
+import { ProgrammingLanguageIconComponent } from '@shared/components/programming-language-icon/programming-language-icon.component';
 
 @NgModule({
     declarations: [
         HomePageComponent,
         UpcomingInterviewRowComponent,
         UpcomingInterviewsTableComponent,
+        InterviewCardComponent,
+        RecentInterviewsListComponent,
     ],
     imports: [
         CommonModule,
@@ -30,6 +35,7 @@ import { UpcomingInterviewsTableComponent } from '@features/main/upcoming-interv
             heroUserCircle,
             heroEllipsisVertical,
         }),
+        ProgrammingLanguageIconComponent,
     ],
 })
 export class MainModule {}

@@ -13,4 +13,5 @@ public interface IConferenceClient
     Task ReceiveIceCandidate(string iceCandidate);
     Task RoleSwapped(SwapRoleRequest request);
     Task QuestionChanged(Guid conferenceId, ConferenceQuestionDto currentQuestion);
+    Task ConferenceEnded(Guid conferenceId);
 }

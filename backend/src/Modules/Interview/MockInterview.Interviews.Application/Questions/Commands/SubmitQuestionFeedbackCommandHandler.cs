@@ -8,18 +8,19 @@ using MockInterview.Interviews.DataAccess;
 
 namespace MockInterview.Interviews.Application.Questions.Commands;
 
-public class SubmitFeedbackCommandHandler : IRequestHandler<SubmitFeedbackCommand, Result<InterviewQuestionDto>>
+public class
+    SubmitQuestionFeedbackCommandHandler : IRequestHandler<SubmitQuestionFeedbackCommand, Result<InterviewQuestionDto>>
 {
     private readonly InterviewsDbContext _dbContext;
     private readonly IMapper _mapper;
 
-    public SubmitFeedbackCommandHandler(InterviewsDbContext dbContext, IMapper mapper)
+    public SubmitQuestionFeedbackCommandHandler(InterviewsDbContext dbContext, IMapper mapper)
     {
         _dbContext = dbContext;
         _mapper = mapper;
     }
 
-    public async Task<Result<InterviewQuestionDto>> Handle(SubmitFeedbackCommand request,
+    public async Task<Result<InterviewQuestionDto>> Handle(SubmitQuestionFeedbackCommand request,
         CancellationToken cancellationToken)
     {
         var question = await _dbContext.InterviewQuestions

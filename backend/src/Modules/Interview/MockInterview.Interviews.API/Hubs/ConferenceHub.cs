@@ -5,6 +5,7 @@ using MockInterview.Interviews.API.Requests;
 using MockInterview.Interviews.API.Responses;
 using MockInterview.Interviews.Application.Conferences.Commands;
 using MockInterview.Interviews.Application.Conferences.Models;
+using MockInterview.Interviews.Application.Interviews.Commands;
 using MockInterview.Interviews.Domain.Enumerations;
 using Shared.Core.API.Hubs;
 
@@ -102,21 +103,26 @@ public class ConferenceHub : BaseHub<IConferenceClient>
         });
     }
 
+    public async Task EndConference(Guid interviewId)
+    {
+        var command = new EndInterviewCommand(UserId, interviewId);
+        var result = await _mediator.Send(command);
+
+        await MatchResultAsync(result, () => Clients.Group($"conf:{interviewId}").ConferenceEnded(interviewId));
+    }
+
     public Task SendOffer(Guid conferenceId, string offer)
     {
-        //return Clients.User(userId.ToString()).ReceiveOffer(offer);
         return Clients.OthersInGroup($"conf:{conferenceId}").ReceiveOffer(offer);
     }
 
     public Task SendAnswer(Guid conferenceId, string answer)
     {
-        //return Clients.User(userId.ToString()).ReceiveAnswer(answer);
         return Clients.OthersInGroup($"conf:{conferenceId}").ReceiveAnswer(answer);
     }
 
     public Task SendIceCandidate(Guid conferenceId, string iceCandidate)
     {
-        //return Clients.User(userId.ToString()).ReceiveIceCandidate(iceCandidate);
         return Clients.OthersInGroup($"conf:{conferenceId}").ReceiveIceCandidate(iceCandidate);
     }
 }
