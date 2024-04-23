@@ -7,5 +7,6 @@ public enum ErrorType
     Conflict,
     NotFound,
     AccessDenied,
-    DomainError
+    DomainError,
+    DatabaseError
 }

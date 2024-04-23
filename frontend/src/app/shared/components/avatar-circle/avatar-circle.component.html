@@ -1,0 +1,13 @@
+@if (avatarUrl) {
+    <div class="avatar">
+        <div
+            class="rounded-full"
+            [style.width.px]="size"
+            [style.height.px]="size"
+        >
+            <img [src]="avatarUrl" alt="mate`s avatar" />
+        </div>
+    </div>
+} @else {
+    <ng-icon size="{{ size }}px" name="heroUserCircle"></ng-icon>
+}

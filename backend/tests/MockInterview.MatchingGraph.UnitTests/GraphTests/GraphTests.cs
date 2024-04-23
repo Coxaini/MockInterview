@@ -9,7 +9,7 @@ public class GraphTests
     public void AddNode_IncreasesNodeCount()
     {
         var graph = new Graph();
-        var node = new Node();
+        var node = new Node(0);
 
         graph.AddNode(node);
 
@@ -20,8 +20,8 @@ public class GraphTests
     public void AddEdge_IncreasesEdgesCount()
     {
         var graph = new Graph();
-        var node1 = new Node();
-        var node2 = new Node();
+        var node1 = new Node(0);
+        var node2 = new Node(1);
 
         graph.AddEdge(node1, node2, 1);
 
@@ -32,7 +32,7 @@ public class GraphTests
     public void RemoveNode_DecreasesNodeCount()
     {
         var graph = new Graph();
-        var node = new Node();
+        var node = new Node(0);
         graph.AddNode(node);
 
         graph.RemoveNode(node);
@@ -44,8 +44,8 @@ public class GraphTests
     public void RemoveEdge_DecreasesEdgesCount()
     {
         var graph = new Graph();
-        var node1 = new Node();
-        var node2 = new Node();
+        var node1 = new Node(0);
+        var node2 = new Node(1);
         graph.AddEdge(node1, node2, 1);
 
         graph.RemoveEdge(node1, node2);
@@ -57,8 +57,8 @@ public class GraphTests
     public void GetNodes_ReturnsAllNodes()
     {
         var graph = new Graph();
-        var node1 = new Node();
-        var node2 = new Node();
+        var node1 = new Node(0);
+        var node2 = new Node(1);
         graph.AddNode(node1);
         graph.AddNode(node2);
 
@@ -72,9 +72,9 @@ public class GraphTests
     public void GetAdjacentEdges_ReturnsCorrectEdges()
     {
         var graph = new Graph();
-        var node1 = new Node();
-        var node2 = new Node();
-        var node3 = new Node();
+        var node1 = new Node(0);
+        var node2 = new Node(1);
+        var node3 = new Node(2);
         graph.AddEdge(node1, node2, 1);
         graph.AddEdge(node1, node3, 2);
 
@@ -87,9 +87,9 @@ public class GraphTests
     public void GetAdjacentNodes_ReturnsCorrectNodes()
     {
         var graph = new Graph();
-        var node1 = new Node();
-        var node2 = new Node();
-        var node3 = new Node();
+        var node1 = new Node(0);
+        var node2 = new Node(1);
+        var node3 = new Node(2);
         graph.AddEdge(node1, node2, 1);
         graph.AddEdge(node1, node3, 2);
 

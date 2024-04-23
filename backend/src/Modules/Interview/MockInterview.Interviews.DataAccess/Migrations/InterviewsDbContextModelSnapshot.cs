@@ -29,6 +29,9 @@ namespace MockInterview.Interviews.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<DateTime?>("EndTime")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("ProgrammingLanguage")
                         .IsRequired()
                         .HasColumnType("text");
@@ -139,6 +142,9 @@ namespace MockInterview.Interviews.DataAccess.Migrations
 
                     b.Property<Guid>("AuthorId")
                         .HasColumnType("uuid");
+
+                    b.Property<string>("Feedback")
+                        .HasColumnType("text");
 
                     b.Property<Guid?>("InterviewId")
                         .HasColumnType("uuid");

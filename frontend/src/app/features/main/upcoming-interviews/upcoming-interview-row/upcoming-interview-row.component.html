@@ -25,7 +25,7 @@
                 xmlns="http://www.w3.org/2000/svg"
                 width="32px"
                 height="32px"
-                class="mx-2"
+                class=""
             >
                 <image
                     width="32px"
@@ -59,6 +59,20 @@
 <td></td>
 <td>
     <div class="flex gap-1 flex-wrap">
+        @if (interview.mate) {
+            <button
+                class="btn btn-sm btn-outline btn-success"
+                (click)="navigateToConference()"
+            >
+                Join
+            </button>
+        }
+        <button
+            class="btn btn-sm btn-outline btn-warning"
+            (click)="navigateToDetails()"
+        >
+            Details
+        </button>
         <button
             class="btn btn-sm btn-outline btn-error"
             (click)="cancelInterview()"
@@ -66,11 +80,10 @@
             Cancel
         </button>
         <button class="btn btn-sm btn-outline btn-primary">Reschedule</button>
-        <button
-            class="btn btn-sm btn-outline btn-warning"
-            (click)="navigateToDetails()"
-        >
-            Details
-        </button>
+        <!-- <div class="dropdown dropdown-right">
+            <div tabindex="0" role="button" class="btn btn-sm btn-outline">
+                <ng-icon size="1.5rem" name="heroEllipsisVertical"></ng-icon>
+            </div>
+        </div> -->
     </div>
 </td>

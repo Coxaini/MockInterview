@@ -1,0 +1,5 @@
+<div class="flex flex-col items-center w-full gap-1 mb-2.5">
+    @for (interview of interviews; track interview.id) {
+        <app-interview-card [interview]="interview"></app-interview-card>
+    }
+</div>

@@ -8,3 +8,7 @@
         transform: none;
     }
 }
+
+:host .dropdown .dropdown-content {
+    position: relative;
+}

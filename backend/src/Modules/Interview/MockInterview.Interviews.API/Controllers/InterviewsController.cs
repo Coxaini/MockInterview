@@ -1,8 +1,10 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using MockInterview.Interviews.API.Requests;
 using MockInterview.Interviews.Application.Interviews.Commands;
 using MockInterview.Interviews.Application.Interviews.Models;
 using MockInterview.Interviews.Application.Interviews.Queries;
+using MockInterview.Interviews.Application.Questions.Commands;
 using Shared.Core.API.Controllers;
 
 namespace MockInterview.Interviews.API.Controllers;
@@ -15,17 +17,25 @@ public class InterviewsController : ApiController
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<UserInterviewDto>>> GetInterviews()
+    public async Task<ActionResult<UserInterviewsDataDto>> GetInterviews()
     {
         var result = await Mediator.Send(new GetInterviewsQuery(UserId));
 
         return MatchResult(result, Ok);
     }
 
-    [HttpGet("{interviewId:guid}")]
-    public async Task<ActionResult<InterviewDetailsDto>> GetInterview(Guid interviewId)
+    [HttpGet("{interviewId:guid}/details")]
+    public async Task<ActionResult<InterviewDetailsDto>> GetInterviewDetails(Guid interviewId)
     {
         var result = await Mediator.Send(new GetInterviewDetailsQuery(UserId, interviewId));
+
+        return MatchResult(result, Ok);
+    }
+
+    [HttpGet("{interviewId:guid}")]
+    public async Task<ActionResult<UserInterviewDto>> GetInterview(Guid interviewId)
+    {
+        var result = await Mediator.Send(new GetInterviewQuery(UserId, interviewId));
 
         return MatchResult(result, Ok);
     }
@@ -36,5 +46,14 @@ public class InterviewsController : ApiController
         var result = await Mediator.Send(new CancelInterviewCommand(UserId, interviewId, cancelReason));
 
         return MatchResult(result, NoContent);
+    }
+
+    [HttpPost("{interviewId:guid}/feedback")]
+    public async Task<ActionResult<InterviewFeedbackDto>> SubmitFeedback(Guid interviewId,
+        SubmitFeedbackRequest request)
+    {
+        var result = await Mediator.Send(new SubmitInterviewFeedbackCommand(UserId, interviewId, request.Feedback));
+
+        return MatchResult(result, Ok);
     }
 }

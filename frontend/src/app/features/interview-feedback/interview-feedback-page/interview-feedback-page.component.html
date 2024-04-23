@@ -1,0 +1,39 @@
+@if (interview$ | async; as interview) {
+    <div class="card bg-base-200 shadow-xl">
+        <div class="card-body items-center z-10 gap-0">
+            <h2 class="card-title">How did it go?</h2>
+
+            <p>
+                Please provide feedback for the session you had on
+                {{ interview.startDateTime | date: "short" }}
+            </p>
+            <span class="inline align-middle">
+                You finished
+                <app-programming-language-icon
+                    [programmingLanguage]="interview.programmingLanguage"
+                ></app-programming-language-icon>
+                interview with
+                <strong>{{ interview.mate.name }}</strong>
+                that lasted
+                {{ getInterviewDuration(interview) }}
+            </span>
+            <p class="text-info m-3 text-lg">
+                Tell your mate what you think about his/her answers and how
+                {{ interview.mate.name }} can improve in the future.
+            </p>
+        </div>
+    </div>
+    <form
+        class="flex flex-col items-center lg:w-[400px] w-full"
+        [formGroup]="feedbackForm"
+        (submit)="submitFeedback(interview.id)"
+    >
+        <textarea
+            formControlName="feedback"
+            appTextareaAutosize
+            class="textarea textarea-bordered w-full text-lg"
+            placeholder="Feedback"
+        ></textarea>
+        <button type="submit" class="btn btn-primary m-1 w-full">Submit</button>
+    </form>
+}

@@ -39,6 +39,7 @@
         <ProjectReference Include="..\Modules\Matchmaking\MockInterview.Matchmaking.API\MockInterview.Matchmaking.API.csproj"/>
         <ProjectReference Include="..\Orchestrators\MockInterview.InterviewOrchestrator\MockInterview.InterviewOrchestrator.csproj"/>
         <ProjectReference Include="..\Shared\Shared.Core\Shared.Core.csproj"/>
+        <ProjectReference Include="..\Shared\Shared.Persistence.Redis\Shared.Persistence.Redis.csproj"/>
         <ProjectReference Include="..\Shared\Shared.Scheduler\Shared.Scheduler.csproj"/>
     </ItemGroup>
 

@@ -1,13 +1,14 @@
 using MockInterview.Identity.API;
 using MockInterview.InterviewOrchestrator;
 using MockInterview.Interviews.API;
+using MockInterview.Interviews.API.Hubs;
 using MockInterview.Matchmaking.API;
 using MockInterview.WebAPI;
 using MockInterview.WebAPI.Middlewares;
 using Shared.Messaging;
+using Shared.Persistence.Redis;
 using Shared.Scheduler;
 using Shared.Security;
-using DependencyInjection = MockInterview.Identity.Application.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,12 +26,15 @@ builder.Services
     .AddInterviewModule(builder.Configuration)
     .AddMessaging(builder.Configuration, new[]
     {
-        typeof(DependencyInjection).Assembly,
+        typeof(MockInterview.Identity.Application.DependencyInjection).Assembly,
         typeof(MockInterview.Matchmaking.Application.DependencyInjection).Assembly,
         typeof(MockInterview.Interviews.Application.DependencyInjection).Assembly,
         typeof(InterviewOrchestratorMassTransitConfiguration).Assembly
     });
 
+builder.Services.AddRedis(builder.Configuration);
+
+builder.Services.AddSignalR();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("Default",
@@ -58,11 +62,12 @@ app.UseMiddleware<AuthTokenSetterMiddleware>();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
 if (!app.Environment.IsDevelopment()) app.UseHttpsRedirection();
 
 app.UseIdentityModule();
+app.UseInterviewModule();
 
+app.MapHub<ConferenceHub>("conference-hub");
 app.MapControllers();
 
 app.Run();

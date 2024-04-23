@@ -1,0 +1,91 @@
+<div class="flex justify-between w-full h-16 items-center p-2">
+    <div class="space-x-2 flex-grow">
+        <a class="btn btn-ghost" routerLink="/home">
+            <ng-icon name="heroArrowLeft" size="1.25rem"></ng-icon>
+            <span class="hidden md:inline"> Back to dashboard</span>
+        </a>
+        @if (conference$ | async) {
+            <button class="btn btn-primary" (click)="swapRoles()">
+                <ng-icon name="heroArrowsRightLeft" size="1.25rem"></ng-icon>
+                <span class="hidden md:inline">Swap roles</span>
+            </button>
+        }
+    </div>
+    @if (userRoleSubject | async; as userRole) {
+        <div class="rounded-badge bg-warning p-3">
+            <span class="text-lg font-bold text-warning-content">
+                @if (isInterviewer(userRole.role)) {
+                    It's your turn to ask questions.
+                } @else {
+                    It's yours peer turn to ask questions.
+                }
+            </span>
+        </div>
+    } @else {
+        <span class="text-lg font-bold hidden md:inline">
+            Waiting for peer to join</span
+        ><span class="loading loading-dots loading-sm ml-1 mt-3"></span>
+    }
+    <div class="flex justify-end flex-grow">
+        <button class="btn btn-error" (click)="endConference()">
+            <ng-icon name="heroStop" size="1.25rem"></ng-icon>
+            End Call
+        </button>
+    </div>
+</div>
+<div class="grid grid-cols-[1fr_2fr] gap-2 flex-1 h-[calc(100vh-4rem)]">
+    <div class="grid grid-rows-[1fr_1fr_auto] justify-center">
+        <video
+            #localVideo
+            [srcObject]="localStream$ | async"
+            autoplay
+            class="aspect-[4/3] bg-base-100 bg-video w-full max-h-[40vh] self-center"
+            playsinline
+        ></video>
+        <div class="aspect-[4/3] w-full max-h-[40vh] self-center relative">
+            @if (!(isConnected$ | async)) {
+                <span
+                    class="loading loading-spinner w-16 h-16 absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%]"
+                ></span>
+            }
+            <video
+                #remoteVideo
+                [srcObject]="remoteStream"
+                autoplay
+                class="bg-base-100 bg-video w-full h-full"
+                playsinline
+            ></video>
+        </div>
+    </div>
+    <div class="p-5 flex flex-col gap-y-3 overflow-y-scroll">
+        @if (userRoleSubject | async; as userRole) {
+            @if (isInterviewer(userRole.role)) {
+                <h2 class="text-2xl font-bold">Your Questions</h2>
+                @if (interview$ | async; as interview) {
+                    <app-questions-list
+                        [isSelectable]="true"
+                        [isEditable]="true"
+                        [questionList]="interview.userQuestionsList"
+                        [tags]="interview.tags"
+                        [selectedQuestionId]="
+                            (currentQuestionSubject | async)?.id || null
+                        "
+                        (selectedQuestionIdChange)="changeQuestion($event)"
+                    ></app-questions-list>
+                }
+            } @else {
+                @if (currentQuestionSubject | async; as currentQuestion) {
+                    <app-question-card
+                        [question]="currentQuestion.text"
+                        [tag]="currentQuestion.tag"
+                        title="Your peer is asking:"
+                    ></app-question-card>
+                } @else {
+                    <span class="text-lg font-bold">
+                        Waiting for interviewer to ask a question
+                    </span>
+                }
+            }
+        }
+    </div>
+</div>

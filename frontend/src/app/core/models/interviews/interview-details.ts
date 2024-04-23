@@ -10,5 +10,5 @@ export interface InterviewDetails {
     endDateTime?: string;
     programmingLanguage: string;
     tags: string[];
-    type: 'arranged' | 'requested';
+    type: 'arranged' | 'requested' | 'ended';
 }

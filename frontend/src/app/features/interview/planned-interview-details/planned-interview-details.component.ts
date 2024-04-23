@@ -1,5 +1,4 @@
 import {
-    AfterViewInit,
     ChangeDetectionStrategy,
     Component,
     Input,
@@ -7,6 +6,7 @@ import {
 } from '@angular/core';
 import { InterviewDetails } from '@core/models/interviews/interview-details';
 import { ProgrammingLanguagesService } from '@core/services/skills/programming-languages.service';
+import { getDuration } from '@core/utils/get-duration';
 import { Observable, of } from 'rxjs';
 
 @Component({
@@ -30,5 +30,12 @@ export class PlannedInterviewDetailsComponent implements OnInit {
                 this.interviewDetails.programmingLanguage,
             )?.fileName,
         );
+    }
+
+    public getInterviewDuration(
+        startDateTime: string,
+        endDateTime: string,
+    ): string {
+        return getDuration(new Date(startDateTime), new Date(endDateTime));
     }
 }

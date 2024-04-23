@@ -4,7 +4,7 @@ import { QuestionsListComponent } from './questions-list/questions-list.componen
 
 const routes: Routes = [
     {
-        path: ':id',
+        path: 'list/:id',
         component: QuestionsListComponent,
     },
 ];

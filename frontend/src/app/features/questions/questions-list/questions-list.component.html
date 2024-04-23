@@ -8,7 +8,11 @@
         questionsListStateService.editedQuestionId$ | async;
         as editedQuestionId
     ) {
-        @for (question of questionList.questions; track question.id) {
+        @for (
+            question of questionList.questions;
+            track question.id;
+            let i = $index
+        ) {
             <app-question
                 cdkDrag
                 [cdkDragDisabled]="question.id === editedQuestionId.id"
@@ -17,9 +21,18 @@
                 [question]="question"
                 [isEdit]="question.id === editedQuestionId.id"
                 [isEditable]="isEditable"
+                [isCurrent]="isSelectable && question.id === selectedQuestionId"
+                (nextQuestion)="nextQuestion()"
+                (previousQuestion)="previousQuestion()"
+                [isFeedbackAvailable]="
+                    isFeedbackEnabled ||
+                    (isSelectable && i <= getCurrentQuestionIndex())
+                "
+                [isFeedbackEditable]="isFeedbackEditable"
+                (feedbackSubmit)="submitFeedback(question.id, $event)"
                 [tags]="tags"
             ></app-question>
-            <div class="divider m-0"></div>
+            <div *ngIf="!$last" class="divider m-0"></div>
         } @empty {
             <span class="text-center font-bold m-5">No questions found</span>
         }

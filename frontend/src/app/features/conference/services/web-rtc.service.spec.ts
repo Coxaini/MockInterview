@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { InterviewScheduleService } from './interview-schedule.service';
+import { WebRtcService } from './web-rtc.service';
 
-describe('InterviewService', () => {
-    let service: InterviewScheduleService;
+describe('WebRtcService', () => {
+    let service: WebRtcService;
 
     beforeEach(() => {
         TestBed.configureTestingModule({});
-        service = TestBed.inject(InterviewScheduleService);
+        service = TestBed.inject(WebRtcService);
     });
 
     it('should be created', () => {

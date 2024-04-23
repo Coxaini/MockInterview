@@ -17,6 +17,20 @@
 </div>
 <div class="divider"></div>
 <div class="flex flex-col items-center">
-    <h1 class="text-2xl font-mono">Upcoming Interviews</h1>
-    <app-upcoming-interviews-table></app-upcoming-interviews-table>
+    @if (isLoaded$ | async) {
+        @if (plannedInterviews$ | async; as plannedInterviews) {
+            <h1 class="text-2xl font-mono">Upcoming Interviews</h1>
+            <app-upcoming-interviews-table
+                [interviews]="plannedInterviews"
+            ></app-upcoming-interviews-table>
+        }
+        @if (recentInterviews$ | async; as recentInterviews) {
+            <h1 class="text-2xl font-mono">Recent Interviews</h1>
+            <app-recent-interviews-list
+                [interviews]="recentInterviews"
+            ></app-recent-interviews-list>
+        }
+    } @else {
+        <span class="loading loading-spinner loading-lg"></span>
+    }
 </div>

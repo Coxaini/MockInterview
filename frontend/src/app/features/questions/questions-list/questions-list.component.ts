@@ -1,4 +1,10 @@
-import { Component, Input } from '@angular/core';
+import {
+    booleanAttribute,
+    Component,
+    EventEmitter,
+    Input,
+    Output,
+} from '@angular/core';
 import { QuestionsList } from '@core/models/questions/questions-list';
 import { QuestionsService } from '../services/questions.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -17,6 +23,13 @@ export class QuestionsListComponent {
     @Input({ required: true }) questionList: QuestionsList;
     @Input() tags: string[];
     @Input() isEditable: boolean = false;
+    @Input() isSelectable: boolean = false;
+    @Input() selectedQuestionId: string | null = null;
+    @Input({ transform: booleanAttribute }) isFeedbackEnabled: boolean = false;
+    @Input({ transform: booleanAttribute }) isFeedbackEditable: boolean = true;
+    @Output() selectedQuestionIdChange = new EventEmitter<string>();
+
+    // currentQuestionIndex: number = 0;
 
     constructor(
         private questionsService: QuestionsService,
@@ -57,6 +70,45 @@ export class QuestionsListComponent {
             .subscribe();
     }
 
+    nextQuestion() {
+        // if (
+        //     this.currentQuestionIndex <
+        //     this.questionList.questions.length - 1
+        // ) {
+        //     this.currentQuestionIndex++;
+        // }
+
+        const currentIndex = this.getCurrentQuestionIndex();
+
+        if (currentIndex < this.questionList.questions.length - 1) {
+            this.selectedQuestionId =
+                this.questionList.questions[currentIndex + 1].id;
+
+            this.selectedQuestionIdChange.emit(this.selectedQuestionId);
+        }
+    }
+
+    previousQuestion() {
+        // if (this.currentQuestionIndex > 0) {
+        //     this.currentQuestionIndex--;
+        // }
+
+        const currentIndex = this.getCurrentQuestionIndex();
+
+        if (currentIndex > 0) {
+            this.selectedQuestionId =
+                this.questionList.questions[currentIndex - 1].id;
+
+            this.selectedQuestionIdChange.emit(this.selectedQuestionId);
+        }
+    }
+
+    getCurrentQuestionIndex() {
+        return this.questionList.questions.findIndex(
+            (q) => q.id === this.selectedQuestionId,
+        );
+    }
+
     public openAddQuestionForm() {
         this.questionsListStateService.exitEditMode();
         this.isQuestionFormOpened = true;
@@ -71,6 +123,25 @@ export class QuestionsListComponent {
             .deleteQuestion(this.questionList.id, questionId)
             .subscribe({
                 next: () => {
+                    if (this.selectedQuestionId === questionId) {
+                        const index = this.questionList.questions.findIndex(
+                            (q) => q.id === questionId,
+                        );
+
+                        if (this.questionList.questions.length === 1) {
+                            this.selectedQuestionId = null;
+                        } else if (index === 0) {
+                            this.selectedQuestionId =
+                                this.questionList.questions[1]?.id;
+                        } else {
+                            this.selectedQuestionId =
+                                this.questionList.questions[index - 1]?.id;
+                        }
+
+                        this.selectedQuestionIdChange.emit(
+                            this.selectedQuestionId || '',
+                        );
+                    }
                     this.questionList.questions =
                         this.questionList.questions.filter(
                             (q) => q.id !== questionId,
@@ -91,9 +162,32 @@ export class QuestionsListComponent {
                         (q) => q.id === result.id,
                     );
                     this.questionList.questions[index] = result;
+
+                    if (
+                        this.isSelectable &&
+                        this.selectedQuestionId === result.id
+                    ) {
+                        this.selectedQuestionIdChange.emit(result.id);
+                    }
                 },
                 error: () => {
                     console.log('Failed to update question');
+                },
+            });
+    }
+
+    public submitFeedback(questionId: string, feedback: string) {
+        this.questionsService
+            .submitFeedback(this.questionList.id, questionId, feedback)
+            .subscribe({
+                next: (question) => {
+                    const index = this.questionList.questions.findIndex(
+                        (q) => q.id === questionId,
+                    );
+                    this.questionList.questions[index] = question;
+                },
+                error: () => {
+                    console.log('Failed to submit feedback');
                 },
             });
     }
@@ -104,6 +198,15 @@ export class QuestionsListComponent {
             .subscribe({
                 next: (question) => {
                     this.questionList.questions.push(question);
+                    if (
+                        this.isSelectable &&
+                        this.questionList.questions.length === 1
+                    ) {
+                        this.selectedQuestionId = question.id;
+                        this.selectedQuestionIdChange.emit(
+                            this.selectedQuestionId,
+                        );
+                    }
                 },
                 error: () => {
                     console.log('Failed to add question');

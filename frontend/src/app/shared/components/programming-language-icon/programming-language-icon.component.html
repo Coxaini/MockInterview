@@ -1,0 +1,15 @@
+@if (languageIcon) {
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        [attr.height]="size"
+        [attr.width]="size"
+    >
+        <image
+            [attr.height]="size"
+            [attr.width]="size"
+            [attr.xlink:href]="languageIcon.fileName"
+        ></image>
+    </svg>
+} @else {
+    {{ programmingLanguage }}
+}

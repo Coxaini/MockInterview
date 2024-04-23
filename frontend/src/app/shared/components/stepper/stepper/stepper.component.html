@@ -18,14 +18,11 @@
     </ul>
 }
 @for (step of steps; track step.label) {
-    <ng-container>
-        <ng-container
-            *ngIf="selectedStep() === $index"
-            [ngTemplateOutlet]="step.content"
-        ></ng-container>
-    </ng-container>
+    <div class="flex-1" *ngIf="selectedStep() === $index">
+        <ng-container [ngTemplateOutlet]="step.content"></ng-container>
+    </div>
 }
-<div class="flex justify-between w-full sticky bottom-0 z-10">
+<div class="flex justify-between w-full bottom-0 z-10">
     <button
         type="button"
         class="btn btn-primary btn-outline"

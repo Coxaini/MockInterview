@@ -43,10 +43,10 @@ public static class PathGrowingAlgorithm
 
         var maxMatching = MaxByWeight(M1, M2);
 
-        return maxMatching.Select(edge => (edge.First, edge.Second)).ToList();
+        return maxMatching.Select(edge => (edge.First, edge.Second));
     }
 
-    private static List<Edge> MaxByWeight(List<Edge> m1, List<Edge> m2)
+    private static IEnumerable<Edge> MaxByWeight(List<Edge> m1, List<Edge> m2)
     {
         return m1.Sum(x => x.Weight) > m2.Sum(x => x.Weight) ? m1 : m2;
     }

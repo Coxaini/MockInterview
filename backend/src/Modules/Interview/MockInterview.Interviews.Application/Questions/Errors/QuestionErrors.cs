@@ -19,4 +19,8 @@ public static class QuestionErrors
     public static readonly IError CannotModifyQuestionList = new AppError(
         "Cannot modify question list. Interview is in progress or finished.",
         nameof(CannotModifyQuestionList), ErrorType.AccessDenied);
+
+    public static readonly IError CannotSubmitQuestionFeedback = new AppError(
+        "Cannot submit question feedback. Interview is not started yet.",
+        nameof(CannotSubmitQuestionFeedback), ErrorType.AccessDenied);
 }

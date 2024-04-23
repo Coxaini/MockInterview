@@ -18,6 +18,13 @@ const routes: Routes = [
                 component: HomePageComponent,
             },
             {
+                path: 'interview-feedback',
+                loadChildren: () =>
+                    import(
+                        '../interview-feedback/interview-feedback.module'
+                    ).then((m) => m.InterviewFeedbackModule),
+            },
+            {
                 path: '',
                 loadChildren: () =>
                     import('../interview/interview.module').then(

@@ -16,25 +16,6 @@ public class InterviewQuestionsController : ApiController
     {
     }
 
-    [HttpPost("from-order")]
-    public async Task<ActionResult<InterviewQuestionsListDto>> CreateInterviewQuestionsListForOrder(
-        [FromQuery] Guid interviewOrderId)
-    {
-        var result = await Mediator.Send(
-            new CreateQuestionsListForOrderCommand(UserId, interviewOrderId));
-
-        return MatchResult(result, Ok);
-    }
-
-    [HttpPost("from-interview")]
-    public async Task<ActionResult> CreateInterviewQuestionsListForInterview([FromQuery] Guid interviewId)
-    {
-        var result = await Mediator.Send(
-            new CreateQuestionsListForInterviewCommand(UserId, interviewId));
-
-        return MatchResult(result, Ok);
-    }
-
     [HttpPost("{questionsListId:guid}/questions")]
     public async Task<ActionResult> AddQuestion(Guid questionsListId, AddQuestionRequest request)
     {
@@ -57,6 +38,16 @@ public class InterviewQuestionsController : ApiController
     {
         var result = await Mediator.Send(new UpdateQuestionCommand(UserId, questionsListId, questionId, request.Text,
             request.Tag, request.DifficultyLevel, request.OrderIndex));
+
+        return MatchResult(result, Ok);
+    }
+
+    [HttpPost("{questionsListId:guid}/questions/{questionId:guid}/feedback")]
+    public async Task<ActionResult> SubmitFeedback(Guid questionsListId, Guid questionId, SubmitFeedbackRequest request)
+    {
+        var result =
+            await Mediator.Send(
+                new SubmitQuestionFeedbackCommand(UserId, questionsListId, questionId, request.Feedback));
 
         return MatchResult(result, Ok);
     }

@@ -7,6 +7,7 @@ public record UserInterviewDto(
     UserDto Mate,
     DateTime StartDateTime,
     DateTime? EndDateTime,
+    string? Feedback,
     string ProgrammingLanguage,
     IEnumerable<string> Tags
 );

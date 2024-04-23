@@ -1,0 +1,10 @@
+<div class="card-body">
+    <h2 class="card-title">{{ title }}</h2>
+    <p class="font-bold text-xl">{{ question }}</p>
+    <div class="flex justify-start gap-x-2">
+        @if (tag) {
+            <ng-icon name="heroTag" size="1.25rem"></ng-icon>
+            <div class="badge badge-secondary badge-outline">{{ tag }}</div>
+        }
+    </div>
+</div>
